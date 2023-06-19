@@ -21,8 +21,33 @@ io.on('connection', socket => {
   socket.on('foob', async word => {
     const response = await pool.query('SELECT * FROM "user";');
     socket.emit('give', response.rows);
-  })
-})
+  });
+
+  // Getting list of rooms
+  socket.on('GET_ROOMS', async user => {
+    const response = await pool.query('SELECT * FROM "chatroom" WHERE "type"=\'public\';');
+    socket.emit('GIVE_ROOMS', response.rows);
+  });
+
+  // Getting messages from a room
+  socket.on('GET_MESSAGES', async room => {   // Expecting just a single room id for now
+    // Convenient variable for long pool query
+    try {
+      const query = 
+      'SELECT "message"."id", "username", "content", "time_posted" FROM "message" ' + 
+      'JOIN "user" ON "user_id" = "user"."id"' +
+      'WHERE "room_id" = $1 ' +
+      'ORDER BY "time_posted";';
+
+    const response = await pool.query(query, [room]);
+
+    // Send back to client
+    socket.emit('GIVE_MESSAGES', response.rows);
+    } catch (error) {
+      console.log('Getting message error', error);
+    }
+  });
+});
 
 const sessionMiddleware = require('./modules/session-middleware');
 const passport = require('./strategies/user.strategy');
