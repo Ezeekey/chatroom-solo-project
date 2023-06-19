@@ -34,7 +34,7 @@ io.on('connection', socket => {
     // Convenient variable for long pool query
     try {
       const query =
-        'SELECT "message"."id", "username", "content", "time_posted" FROM "message" ' +
+        'SELECT "message"."id", "username", "content", "time_posted", "marked_for_delete" FROM "message" ' +
         'JOIN "user" ON "user_id" = "user"."id"' +
         'WHERE "room_id" = $1 ' +
         'ORDER BY "time_posted";';
@@ -52,10 +52,10 @@ io.on('connection', socket => {
   socket.on('POST_MESSAGE', async body => {   // Expecting {user_id, room_id, content}
     try {
       // Convienient variable for longish query
-      const query = 
+      const query =
         'INSERT INTO "message" ("user_id", "room_id", "content") ' +
         'VALUES ($1, $2, $3);';
-      
+
       // Contact database to insert message
       const response = await pool.query(query, [body.user_id, body.room_id, body.content]);
 
@@ -72,9 +72,9 @@ io.on('connection', socket => {
       const editedContent = body.content + ' (edited)';
 
       // Convenient query variable
-      const query = 
-        'UPDATE "message" SET "content" = $1 ' + 
-        'WHERE "message"."id" = $2 AND "user_id" = $3;';
+      const query =
+        'UPDATE "message" SET "content" = $1 ' +
+        'WHERE "message"."id" = $2 AND "user_id" = $3 AND "marked_for_delete" = FALSE;';
 
       // Contact the database to try and update message
       const response = await pool.query(query, [editedContent, body.message_id, body.user_id]);
@@ -85,6 +85,41 @@ io.on('connection', socket => {
       console.log('Big message edit error!', error);
     }
   });
+
+  // Deleting messages
+  socket.on('DELETE_MESSAGE', async body => { // Expecting {user_id, message_id}
+    try {
+      // Get user privilege from the database to prevent any shady actors from deleting everything
+      const userPrivilege = await pool.query('SELECT "privilege" FROM "user" WHERE "id" = $1;', [body.user_id]);
+      // Remember to use userPrivilege.rows[0].privilege when calling
+
+      // Regular users can not truly delete messages. Only admins will have that power
+      let query = '';
+      const queryArgs = [];
+
+      // Checking if user is an admin
+      if (userPrivilege.rows[0].privilege > 0) {
+        // User is an admin
+        query = 'DELETE FROM "message" WHERE "message"."id" = $1';
+        queryArgs.push(body.message_id);
+      } else {
+        // User is just a regular user
+        query = 
+          'UPDATE "message" SET ' + 
+          '"content" = \'deleted by user\', ' +
+          '"marked_for_delete" = true ' +
+          'WHERE "id" = $1 AND "user_id" = $2;';
+        queryArgs.push(body.message_id, body.user_id);
+      }
+
+      // By here, the query has been figured out
+      const response = await pool.query(query, queryArgs);
+      // Tell client about success
+      socket.emit('MESSAGE_SUCCESS', 'Woo');
+    } catch (error) {
+      console.log('Big delete error!', error);
+    }
+  })
 });
 
 const sessionMiddleware = require('./modules/session-middleware');

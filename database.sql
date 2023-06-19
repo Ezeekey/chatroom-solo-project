@@ -24,7 +24,8 @@ CREATE TABLE "message" (
     "user_id" INT REFERENCES "user", 
     "room_id" INT REFERENCES "chatroom" ON DELETE CASCADE, 
     "content" VARCHAR(500) NOT NULL,
-    "time_posted" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    "time_posted" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "marked_for_delete" BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE "room_member" (
