@@ -22,7 +22,7 @@ CREATE TABLE "chatroom" (
 CREATE TABLE "message" (
     "id" SERIAL PRIMARY KEY, 
     "user_id" INT REFERENCES "user", 
-    "room_id" INT REFERENCES "chatroom", 
+    "room_id" INT REFERENCES "chatroom" ON DELETE CASCADE, 
     "content" VARCHAR(500) NOT NULL,
     "time_posted" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
