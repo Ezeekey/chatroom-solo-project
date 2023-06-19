@@ -4,6 +4,9 @@ require('dotenv').config();
 
 const app = express();
 
+// Starting an httpServer const so that socket.io can work
+const httpServer = require('http').createServer(app);
+
 const sessionMiddleware = require('./modules/session-middleware');
 const passport = require('./strategies/user.strategy');
 
@@ -31,6 +34,6 @@ app.use(express.static('build'));
 const PORT = process.env.PORT || 5000;
 
 /** Listen * */
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   console.log(`Listening on port: ${PORT}`);
 });
