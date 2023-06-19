@@ -7,6 +7,14 @@ const app = express();
 // Starting an httpServer const so that socket.io can work
 const httpServer = require('http').createServer(app);
 
+// Actually starting socket.io
+const io = require('socket.io')(httpServer, {});
+
+io.on('connection', socket => {
+  // Merely testing
+  socket.emit('Henlo', 'henlo');
+})
+
 const sessionMiddleware = require('./modules/session-middleware');
 const passport = require('./strategies/user.strategy');
 
