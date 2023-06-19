@@ -33,18 +33,35 @@ io.on('connection', socket => {
   socket.on('GET_MESSAGES', async room => {   // Expecting just a single room id for now
     // Convenient variable for long pool query
     try {
-      const query = 
-      'SELECT "message"."id", "username", "content", "time_posted" FROM "message" ' + 
-      'JOIN "user" ON "user_id" = "user"."id"' +
-      'WHERE "room_id" = $1 ' +
-      'ORDER BY "time_posted";';
+      const query =
+        'SELECT "message"."id", "username", "content", "time_posted" FROM "message" ' +
+        'JOIN "user" ON "user_id" = "user"."id"' +
+        'WHERE "room_id" = $1 ' +
+        'ORDER BY "time_posted";';
 
-    const response = await pool.query(query, [room]);
+      const response = await pool.query(query, [room]);
 
-    // Send back to client
-    socket.emit('GIVE_MESSAGES', response.rows);
+      // Send back to client
+      socket.emit('GIVE_MESSAGES', response.rows);
     } catch (error) {
       console.log('Getting message error', error);
+    }
+  });
+
+  // Posting messages
+  socket.on('POST_MESSAGE', async body => {   // Expecting {user_id, room_id, content}
+    try {
+      // Convienient variable for longish query
+      const query = 
+        'INSERT INTO "message" ("user_id", "room_id", "content") ' +
+        'VALUES ($1, $2, $3);';
+      
+      // Contact database to insert message
+      const response = await pool.query(query, [body.user_id, body.room_id, body.content]);
+
+      socket.emit('POST_MESSAGE_SUCCESS', 'yay');
+    } catch (error) {
+      console.log('Oh no message post errror!', error);
     }
   });
 });
