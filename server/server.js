@@ -10,9 +10,18 @@ const httpServer = require('http').createServer(app);
 // Actually starting socket.io
 const io = require('socket.io')(httpServer, {});
 
+// Importing pool so sockets can make queries to database
+const pool = require('./modules/pool.js');
+
 io.on('connection', socket => {
   // Merely testing
   socket.emit('Henlo', 'henlo');
+
+  // Also merely testing
+  socket.on('foob', async word => {
+    const response = await pool.query('SELECT * FROM "user";');
+    socket.emit('give', response.rows);
+  })
 })
 
 const sessionMiddleware = require('./modules/session-middleware');
