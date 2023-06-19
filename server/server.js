@@ -59,9 +59,30 @@ io.on('connection', socket => {
       // Contact database to insert message
       const response = await pool.query(query, [body.user_id, body.room_id, body.content]);
 
-      socket.emit('POST_MESSAGE_SUCCESS', 'yay');
+      socket.emit('MESSAGE_SUCCESS', 'yay');
     } catch (error) {
       console.log('Oh no message post errror!', error);
+    }
+  });
+
+  // Editing messages
+  socket.on('EDIT_MESSAGE', async body => {   // Expecting {user_id, message_id, content}
+    try {
+      // Modifying the content from body to show that it has been edited
+      const editedContent = body.content + ' (edited)';
+
+      // Convenient query variable
+      const query = 
+        'UPDATE "message" SET "content" = $1 ' + 
+        'WHERE "message"."id" = $2 AND "user_id" = $3;';
+
+      // Contact the database to try and update message
+      const response = await pool.query(query, [editedContent, body.message_id, body.user_id]);
+
+      // Tell the client about success
+      socket.emit('MESSAGE_SUCCESS', 'hurrah');
+    } catch (error) {
+      console.log('Big message edit error!', error);
     }
   });
 });
