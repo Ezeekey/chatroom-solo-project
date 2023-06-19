@@ -42,4 +42,23 @@ router.post('/', async (req, res) => {  // Expecting {room_name, type, creator_i
 
 // END POST
 
+// START DELETE
+
+router.delete('/:id', async (req, res) => {    // Expecting user id in query params
+    try {
+        // Convenient query text variable
+        const query = 
+            'DELETE FROM "chatroom" WHERE "creator_id" = $1 AND "id" = $2;';
+        pool.query(query, [req.query.creator_id, req.params.id]);
+
+        // Send success to client
+        res.sendStatus(204);
+    } catch (error) {
+        console.log('Room deletion error!', error);
+        res.sendStatus(500);
+    }
+});
+
+// END DELETE
+
 module.exports = router;
