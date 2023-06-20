@@ -31,8 +31,32 @@ router.get('/:id', async (req, res) => {     // Expecting {user_id}
         console.log('Get buddy error!', error);
         res.sendStatus(500);
     }
-})
+});
 
 // END GET
+
+// START POST
+
+// Sending buddy requests
+router.post('/', async (req, res) => {  // Expecting {user_id_1, user_id_2}
+    try {
+        // First checking if buddy relation already exists
+        const buddyRow = await pool.query('SELECT * FROM buddy WHERE (user_id_1 = $1 AND user_id_2 = $2) OR (user_id_1 = $2 AND user_id_2 = $1);', [req.body.user_id_1, req.body.user_id_2]);
+        if (buddyRow.rows.length > 0) {
+            res.sendStatus(400);
+            console.log('Client attempted to friend twice');
+            return;
+        }
+        // Adding request to database
+        await pool.query('INSERT INTO buddy (user_id_1, user_id_2) VALUES ($1, $2);', [req.body.user_id_1, req.body.user_id_2]);
+        // Request went in good
+        res.sendStatus(201);
+    } catch (error) {
+        console.log('Buddy post error!', error);
+        res.sendStatus(500);
+    }
+});
+
+// END POST
 
 module.exports = router;
