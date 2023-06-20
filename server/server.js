@@ -128,6 +128,7 @@ const passport = require('./strategies/user.strategy');
 // Route includes
 const userRouter = require('./routes/user.router');
 const roomRouter = require('./routes/room.router.js');
+const buddyRouter = require('./routes/buddy.router.js');
 
 // Body parser middleware
 app.use(bodyParser.json());
@@ -143,6 +144,7 @@ app.use(passport.session());
 /* Routes */
 app.use('/api/user', userRouter);
 app.use('/api/rooms', roomRouter);
+app.use('/api/buddy', buddyRouter);
 
 // Serve static files
 app.use(express.static('build'));
