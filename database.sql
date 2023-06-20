@@ -7,7 +7,7 @@ CREATE TABLE "user" (
     "id" SERIAL PRIMARY KEY,
     "username" VARCHAR (80) UNIQUE NOT NULL,
     "password" VARCHAR (1000) NOT NULL,
-    "privilege" INT NOT NULL,
+    "privilege" INT DEFAULT 0 NOT NULL,
     "status" VARCHAR(150)
 );
 
