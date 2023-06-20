@@ -7,9 +7,9 @@ const router = express.Router();
 // Getting list of all rooms
 router.get('/', async (req, res) => {
     try {
-        // Convinient variable for longish query
+        // Convenient variable for longish query
         const query = 
-            'SELECT "chatroom"."id", "room_name", "username" FROM "chatroom" ' +
+            'SELECT "chatroom"."id", "room_name", "username", "type" FROM "chatroom" ' +
             'JOIN "user" ON "user"."id" = "creator_id";' 
         const response = await pool.query(query);
         // Send to client
