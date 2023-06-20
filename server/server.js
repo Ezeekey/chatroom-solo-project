@@ -14,10 +14,23 @@ const io = require('socket.io')(httpServer, {});
 const pool = require('./modules/pool.js');
 
 io.on('connection', socket => {
+  const joinedRooms = [];   // This is for some filthy filthy hackery to store rooms for down below
+
   console.log('Websocket connect');
+
   // Joining a room
   socket.on('JOIN_ROOM', room => {  // Expecting room id
+    console.log(room, 'has been joined');
+
+    // Filthy filthy hackery to leave all other rooms before joining
+    for ( let i = 0; i < joinedRooms.length; i++) {
+      socket.leave(joinedRooms[i]);
+    }
+
     socket.join(String(room));
+    joinedRooms.push(room);
+
+    console.log(socket.rooms);
   });
 
   // Getting list of rooms
@@ -29,6 +42,9 @@ io.on('connection', socket => {
   // Getting messages from a room
   socket.on('GET_MESSAGES', async room => {   // Expecting just a single room id for now
     // Convenient variable for long pool query
+    console.log('Trying to get messages for', room);
+    console.log(socket.rooms);
+
     try {
       const query =
         'SELECT "message"."id", "username", "content", "time_posted", "marked_for_delete" FROM "message" ' +
@@ -48,6 +64,7 @@ io.on('connection', socket => {
   // Posting messages
   socket.on('POST_MESSAGE', async body => {   // Expecting {user_id, room_id, content}
     try {
+      console.log(socket.rooms);
       // Convienient variable for longish query
       const query =
         'INSERT INTO "message" ("user_id", "room_id", "content") ' +
@@ -56,7 +73,10 @@ io.on('connection', socket => {
       // Contact database to insert message
       const response = await pool.query(query, [body.user_id, body.room_id, body.content]);
 
-      socket.to(String('room_id')).emit('MESSAGE_SUCCESS', 'yay');
+      console.log(socket.rooms);
+      console.log(body);
+      socket.to(body.room_id).emit('MESSAGE_SUCCESS', 'yay');
+      socket.emit('MESSAGE_SUCCESS', 'yay');
     } catch (error) {
       console.log('Oh no message post errror!', error);
     }

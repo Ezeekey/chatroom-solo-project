@@ -10,17 +10,43 @@ import { List, Typography, Container } from "@mui/material";
 
 // Component import
 import MessageBox from "../../MessageBox/MessageBox";
+import PostMessageForm from "../../PostMessageForm/PostMessageForm";
+
+// Dirty hax
+let hack = 0;
+let otherHack = [];
+
+const updateMessagesEvent = new Event('message_got');
 
 // START websocket
 
 // Connecting to server
 const socket = io('/');
 
+// START websocket functions
+
+    // Recieving messages
+    socket.on('GIVE_MESSAGES', messages => {
+        console.log('no');
+        otherHack = messages;
+        document.dispatchEvent(updateMessagesEvent);
+        console.log(otherHack);
+    });
+    // Successful changes to messages
+    socket.on('MESSAGE_SUCCESS', e => {
+        // Get new message list
+        console.log('succ')
+        socket.emit('GET_MESSAGES', hack);
+    });
+
+    // END websocket functions
+
 // END websocket
 
 export default function RoomPage() {
     // This will allow for the room id to be gotten
     const param = useParams();
+    hack = param.id;
 
     // Holds the room name
     const [roomName, setRoomName] = useState('');
@@ -28,9 +54,21 @@ export default function RoomPage() {
     // Holds each chat message
     const [messages, setMessages] = useState([]);
 
-    socket.on('GIVE_MESSAGES', messages => {
-        setMessages(messages);
-    })
+    // // START websocket functions
+
+    // // Recieving messages
+    // socket.on('GIVE_MESSAGES', messages => {
+    //     console.log('bug');
+    //     setMessages([]);
+    // });
+    // // Successful changes to messages
+    // socket.on('MESSAGE_SUCCESS', e => {
+    //     // Get new message list
+    //     console.log('succ')
+    //     socket.emit('GET_MESSAGES', param.id);
+    // });
+
+    // // END websocket functions
 
     useEffect(() => {
         // Getting the name of the room
@@ -39,12 +77,20 @@ export default function RoomPage() {
             .catch(error => console.log('Getting room name error!', error));
         // Getting the messages from the chat on start
         socket.emit('GET_MESSAGES', param.id);
+        // Enable receiving messages
+        socket.emit('JOIN_ROOM', param.id);
+        console.log('uuh hi?');
+
+        document.addEventListener('message_got', e => {
+            setMessages(otherHack);
+        });
     }, []);
 
     return (
         <Container>
             <Typography variant="h3"> {roomName} </Typography>
             {messages.map(message => <MessageBox key={message.id} message={message} />)}
+            <PostMessageForm socket={socket} />
         </Container>
     )
 }
