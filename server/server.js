@@ -14,13 +14,9 @@ const io = require('socket.io')(httpServer, {});
 const pool = require('./modules/pool.js');
 
 io.on('connection', socket => {
-  // Merely testing
-  socket.emit('Henlo', 'henlo');
-
-  // Also merely testing
-  socket.on('foob', async word => {
-    const response = await pool.query('SELECT * FROM "user";');
-    socket.emit('give', response.rows);
+  // Joining a room
+  socket.on('JOIN_ROOM', room => {  // Expecting room id
+    socket.join(String(room));
   });
 
   // Getting list of rooms
@@ -59,7 +55,7 @@ io.on('connection', socket => {
       // Contact database to insert message
       const response = await pool.query(query, [body.user_id, body.room_id, body.content]);
 
-      socket.emit('MESSAGE_SUCCESS', 'yay');
+      socket.to(String('room_id')).emit('MESSAGE_SUCCESS', 'yay');
     } catch (error) {
       console.log('Oh no message post errror!', error);
     }

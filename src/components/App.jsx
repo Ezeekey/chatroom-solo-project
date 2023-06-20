@@ -20,6 +20,7 @@ import LandingPage from './Pages/LandingPage/LandingPage';
 import LoginPage from './Pages/LoginPage/LoginPage';
 import RegisterPage from './Pages/RegisterPage/RegisterPage';
 import LobbyPage from './Pages/LobbyPage/LobbyPage';
+import RoomPage from './Pages/RoomPage/RoomPage';
 
 import './App.css';
 
@@ -71,6 +72,10 @@ function App() {
 
           <ProtectedRoute path="/lobby">
             <LobbyPage />
+          </ProtectedRoute>
+
+          <ProtectedRoute path="/room/:id">
+            <RoomPage />
           </ProtectedRoute>
 
           <Route
