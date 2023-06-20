@@ -13,9 +13,6 @@ import LobbyRow from "../../LobbyRow/LobbyRow"
 export default function LobbyPage() {
     // This is where the list of lobbies comes from
     const lobbies = useSelector(store => store.lobby);
-    // This is how redux will be contacted to get lobbies
-    const dispatch = useDispatch();
-    useEffect(() => {dispatch({type: 'GET_LOBBIES'})}, []);
 
     return (
         <Container>

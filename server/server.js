@@ -14,6 +14,7 @@ const io = require('socket.io')(httpServer, {});
 const pool = require('./modules/pool.js');
 
 io.on('connection', socket => {
+  console.log('Websocket connect');
   // Joining a room
   socket.on('JOIN_ROOM', room => {  // Expecting room id
     socket.join(String(room));
