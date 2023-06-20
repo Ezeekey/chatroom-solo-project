@@ -59,4 +59,22 @@ router.post('/', async (req, res) => {  // Expecting {user_id_1, user_id_2}
 
 // END POST
 
+// START DELETE
+
+// Deleting a buddy
+router.delete('/:id', async (req, res) => {
+    try {   // Expecting a query param {user_id} for now
+        // Query varibale for ease of use
+        const query = 'DELETE FROM buddy WHERE id = $1 AND (user_id_1 = $2 OR user_id_2 = $2);'
+        await pool.query(query, [req.params.id, req.query.user_id]);
+        // Should be all deleted now, tell client
+        res.sendStatus(204);
+    } catch (error) {
+        console.log('Buddy deletion error!', error);
+        res.sendStatus(500);
+    }
+});
+
+// END DELETE
+
 module.exports = router;
