@@ -9,7 +9,7 @@ import axios from "axios";
 import { List, Typography, Container } from "@mui/material";
 
 // Component import
-
+import MessageBox from "../../MessageBox/MessageBox";
 
 // START websocket
 
@@ -44,7 +44,7 @@ export default function RoomPage() {
     return (
         <Container>
             <Typography variant="h3"> {roomName} </Typography>
-            <Typography>{JSON.stringify(messages)}</Typography>
+            {messages.map(message => <MessageBox key={message.id} message={message} />)}
         </Container>
     )
 }
