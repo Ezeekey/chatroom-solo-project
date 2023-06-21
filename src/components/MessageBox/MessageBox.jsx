@@ -20,6 +20,9 @@ export default function MessageBox({ message, socket, room_id }) {
 
 
     function deleteMessage() {
+        // Close the material modal before popping up the sweet alerty message
+        setModalOpen(false);
+
         Swal.fire({
             title: 'Are you sure?',
             showDenyButton: true,
@@ -31,7 +34,6 @@ export default function MessageBox({ message, socket, room_id }) {
             if (result.isConfirmed) {
                 // Actually delete
                 socket.emit('DELETE_MESSAGE', { user_id: user.id, message_id: message.id, room_id });
-                setModalOpen(false);
                 // Deletion message
                 Swal.fire(
                     'DELETED',
@@ -42,8 +44,6 @@ export default function MessageBox({ message, socket, room_id }) {
                 Swal.fire('Not deleted', 'The message has not been deleted', 'info')
             }
         });
-
-
     }
 
     return (
