@@ -1,6 +1,20 @@
+import { useSelector, useDispatch } from "react-redux"
+import { useEffect } from "react";
+
+import BuddyRow from "../../BuddyRow/BuddyRow"
+
 import { Table, TableRow, TableCell, TableHead, TableBody, Typography, Button, Container } from "@mui/material"
 
 export default function BuddyPage() {
+    // To dispatch to store
+    const dispatch = useDispatch();
+    // Storing all the buddies here
+    const buddies = useSelector(store => store.buddy);
+    const user = useSelector(store => store.user);
+
+    // On page render
+    useEffect(() => {dispatch({type: 'GET_BUDDY', payload: user.id})}, []);
+
     return (
         <Container>
             <Typography variant="h3" align="center">Buddies</Typography>
@@ -22,7 +36,7 @@ export default function BuddyPage() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    
+                    {buddies.map(buddy => buddy.accepted && <BuddyRow key={buddy.id} buddy={buddy} />)}
                 </TableBody>
             </Table>
         </Container>

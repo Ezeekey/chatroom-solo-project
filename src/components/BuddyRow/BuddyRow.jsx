@@ -1,4 +1,4 @@
-import { TableRow, TableCell, Typography } from "@mui/material"
+import { TableRow, TableCell, Typography, Button } from "@mui/material"
 
 export default function BuddyRow({buddy}) {
     return (
