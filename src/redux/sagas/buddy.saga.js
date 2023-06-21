@@ -8,7 +8,7 @@ export default function* buddySage() {
 function* getBuddy(action) {    // Expecting a user id
     try {
         // Get from server
-        const response = yield axios.get(`/api/buddy/${action.payload}`);
+        const response = yield axios.get(`/api/buddy/`);
         // Send to store
         yield put({type: 'SET_BUDDIES', payload: response.data});
     } catch (error) {

@@ -2,10 +2,12 @@ const express = require('express');
 const pool = require('../modules/pool.js');
 const router = express.Router();
 
+const { rejectUnauthenticated } = require('../modules/authentication-middleware.js');
+
 // START GET
 
 // Getting list of buddies for one user
-router.get('/:id', async (req, res) => {     // Expecting {user_id}
+router.get('/', rejectUnauthenticated, async (req, res) => {     // Expecting {user_id}
     try {
         // Convenient variable to hold query
         const query = 
@@ -16,7 +18,7 @@ router.get('/:id', async (req, res) => {     // Expecting {user_id}
             'SELECT "buddy"."id", "user_id_1" AS "user_id", "accepted" FROM "user" ' +
             'JOIN "buddy" ON "user_id_2" = "user"."id" WHERE "user"."id" = $1;';
 
-        const response = await pool.query(query, [req.params.id]);
+        const response = await pool.query(query, [req.user.id]);
         // By here, this is a joined table consisting of just ids.
 
         // Adding names to these ids
@@ -39,7 +41,7 @@ router.get('/:id', async (req, res) => {     // Expecting {user_id}
 // START POST
 
 // Sending buddy requests
-router.post('/', async (req, res) => {  // Expecting {user_id_1, user_id_2}
+router.post('/', rejectUnauthenticated, async (req, res) => {  // Expecting { user_id_2}
     try {
         // First checking if buddy relation already exists
         const buddyRow = await pool.query('SELECT * FROM buddy WHERE (user_id_1 = $1 AND user_id_2 = $2) OR (user_id_1 = $2 AND user_id_2 = $1);', [req.body.user_id_1, req.body.user_id_2]);
@@ -49,7 +51,7 @@ router.post('/', async (req, res) => {  // Expecting {user_id_1, user_id_2}
             return;
         }
         // Adding request to database
-        await pool.query('INSERT INTO buddy (user_id_1, user_id_2) VALUES ($1, $2);', [req.body.user_id_1, req.body.user_id_2]);
+        await pool.query('INSERT INTO buddy (user_id_1, user_id_2) VALUES ($1, $2);', [req.user.id, req.body.user_id_2]);
         // Request went in good
         res.sendStatus(201);
     } catch (error) {
@@ -63,11 +65,11 @@ router.post('/', async (req, res) => {  // Expecting {user_id_1, user_id_2}
 // START DELETE
 
 // Deleting a buddy
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', rejectUnauthenticated, async (req, res) => {
     try {   // Expecting a query param {user_id} for now
         // Query varibale for ease of use
         const query = 'DELETE FROM buddy WHERE id = $1 AND (user_id_1 = $2 OR user_id_2 = $2);'
-        await pool.query(query, [req.params.id, req.query.user_id]);
+        await pool.query(query, [req.params.id, req.user.id]);
         // Should be all deleted now, tell client
         res.sendStatus(204);
     } catch (error) {
