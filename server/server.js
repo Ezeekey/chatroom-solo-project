@@ -43,7 +43,7 @@ io.on('connection', socket => {
     try {
       // Convenient variable for long pool query
       const query =
-        'SELECT "message"."id", "username", "content", "time_posted", "marked_for_delete" FROM "message" ' +
+        'SELECT "message"."id", "user_id", "username", "content", "time_posted", "marked_for_delete" FROM "message" ' +
         'JOIN "user" ON "user_id" = "user"."id"' +
         'WHERE "room_id" = $1 ' +
         'ORDER BY "time_posted";';
