@@ -13,10 +13,10 @@ import MessageBox from "../../MessageBox/MessageBox";
 import PostMessageForm from "../../PostMessageForm/PostMessageForm";
 
 // Dirty hax
-let hack = 0;
-let otherHack = [];
-
+let roomId = 0;
+let messageList = [];
 const updateMessagesEvent = new Event('message_got');
+// Filthy, but functional. This may be the only way to do it
 
 // START websocket
 
@@ -27,16 +27,14 @@ const socket = io('/');
 
     // Recieving messages
     socket.on('GIVE_MESSAGES', messages => {
-        console.log('no');
-        otherHack = messages;
+        messageList = messages;
+        // This is to trigger the DOM to rerender
         document.dispatchEvent(updateMessagesEvent);
-        console.log(otherHack);
     });
     // Successful changes to messages
     socket.on('MESSAGE_SUCCESS', e => {
         // Get new message list
-        console.log('succ')
-        socket.emit('GET_MESSAGES', hack);
+        socket.emit('GET_MESSAGES', roomId);
     });
 
     // END websocket functions
@@ -46,29 +44,13 @@ const socket = io('/');
 export default function RoomPage() {
     // This will allow for the room id to be gotten
     const param = useParams();
-    hack = param.id;
+    roomId = param.id;
 
     // Holds the room name
     const [roomName, setRoomName] = useState('');
     // Argh
     // Holds each chat message
     const [messages, setMessages] = useState([]);
-
-    // // START websocket functions
-
-    // // Recieving messages
-    // socket.on('GIVE_MESSAGES', messages => {
-    //     console.log('bug');
-    //     setMessages([]);
-    // });
-    // // Successful changes to messages
-    // socket.on('MESSAGE_SUCCESS', e => {
-    //     // Get new message list
-    //     console.log('succ')
-    //     socket.emit('GET_MESSAGES', param.id);
-    // });
-
-    // // END websocket functions
 
     useEffect(() => {
         // Getting the name of the room
@@ -79,10 +61,11 @@ export default function RoomPage() {
         socket.emit('GET_MESSAGES', param.id);
         // Enable receiving messages
         socket.emit('JOIN_ROOM', param.id);
-        console.log('uuh hi?');
 
+        // This hackery has been done because having socket listeners inside of a react conponent causes a severe bug
+        // The event here allows for the chat display to update as new messages come in
         document.addEventListener('message_got', e => {
-            setMessages(otherHack);
+            setMessages(messageList);
         });
     }, []);
 

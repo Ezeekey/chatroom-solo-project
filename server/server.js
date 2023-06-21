@@ -23,14 +23,12 @@ io.on('connection', socket => {
     console.log(room, 'has been joined');
 
     // Filthy filthy hackery to leave all other rooms before joining
-    for ( let i = 0; i < joinedRooms.length; i++) {
+    for (let i = 0; i < joinedRooms.length; i++) {
       socket.leave(joinedRooms[i]);
     }
 
     socket.join(String(room));
     joinedRooms.push(room);
-
-    console.log(socket.rooms);
   });
 
   // Getting list of rooms
@@ -41,11 +39,9 @@ io.on('connection', socket => {
 
   // Getting messages from a room
   socket.on('GET_MESSAGES', async room => {   // Expecting just a single room id for now
-    // Convenient variable for long pool query
-    console.log('Trying to get messages for', room);
-    console.log(socket.rooms);
 
     try {
+      // Convenient variable for long pool query
       const query =
         'SELECT "message"."id", "username", "content", "time_posted", "marked_for_delete" FROM "message" ' +
         'JOIN "user" ON "user_id" = "user"."id"' +
@@ -64,7 +60,6 @@ io.on('connection', socket => {
   // Posting messages
   socket.on('POST_MESSAGE', async body => {   // Expecting {user_id, room_id, content}
     try {
-      console.log(socket.rooms);
       // Convienient variable for longish query
       const query =
         'INSERT INTO "message" ("user_id", "room_id", "content") ' +
@@ -73,8 +68,7 @@ io.on('connection', socket => {
       // Contact database to insert message
       const response = await pool.query(query, [body.user_id, body.room_id, body.content]);
 
-      console.log(socket.rooms);
-      console.log(body);
+      // Sending successful add to everybody in the room
       socket.to(body.room_id).emit('MESSAGE_SUCCESS', 'yay');
       socket.emit('MESSAGE_SUCCESS', 'yay');
     } catch (error) {
@@ -121,8 +115,8 @@ io.on('connection', socket => {
         queryArgs.push(body.message_id);
       } else {
         // User is just a regular user
-        query = 
-          'UPDATE "message" SET ' + 
+        query =
+          'UPDATE "message" SET ' +
           '"content" = \'deleted by user\', ' +
           '"marked_for_delete" = true ' +
           'WHERE "id" = $1 AND "user_id" = $2;';
