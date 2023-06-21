@@ -25,19 +25,19 @@ const socket = io('/');
 
 // START websocket functions
 
-    // Recieving messages
-    socket.on('GIVE_MESSAGES', messages => {
-        messageList = messages;
-        // This is to trigger the DOM to rerender
-        document.dispatchEvent(updateMessagesEvent);
-    });
-    // Successful changes to messages
-    socket.on('MESSAGE_SUCCESS', e => {
-        // Get new message list
-        socket.emit('GET_MESSAGES', roomId);
-    });
+// Recieving messages
+socket.on('GIVE_MESSAGES', messages => {
+    messageList = messages;
+    // This is to trigger the DOM to rerender
+    document.dispatchEvent(updateMessagesEvent);
+});
+// Successful changes to messages
+socket.on('MESSAGE_SUCCESS', e => {
+    // Get new message list
+    socket.emit('GET_MESSAGES', roomId);
+});
 
-    // END websocket functions
+// END websocket functions
 
 // END websocket
 
