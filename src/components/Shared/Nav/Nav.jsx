@@ -36,6 +36,10 @@ function Nav() {
               Lobbies
             </Link>
 
+            <Link className="navLink" to="/buddy">
+              Buddies
+            </Link>
+
             <LogOutButton className="navLink" />
           </>
         )}

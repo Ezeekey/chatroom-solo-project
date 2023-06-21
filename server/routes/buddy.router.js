@@ -21,8 +21,9 @@ router.get('/:id', async (req, res) => {     // Expecting {user_id}
 
         // Adding names to these ids
         for ( item of response.rows ) {     // Feels dirty, but it works.
-            const nameRow = await pool.query('SELECT username FROM "user" WHERE id = $1', [item.user_id]);
+            const nameRow = await pool.query('SELECT username, status FROM "user" WHERE id = $1', [item.user_id]);
             item.username = nameRow.rows[0].username;
+            item.status = nameRow.rows[0].status;
         }
 
         // Send to client
