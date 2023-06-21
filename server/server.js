@@ -77,7 +77,7 @@ io.on('connection', socket => {
   });
 
   // Editing messages
-  socket.on('EDIT_MESSAGE', async body => {   // Expecting {user_id, message_id, content}
+  socket.on('EDIT_MESSAGE', async body => {   // Expecting {user_id, message_id, content, room_id}
     try {
       // Modifying the content from body to show that it has been edited
       const editedContent = body.content + ' (edited)';
@@ -90,15 +90,16 @@ io.on('connection', socket => {
       // Contact the database to try and update message
       const response = await pool.query(query, [editedContent, body.message_id, body.user_id]);
 
-      // Tell the client about success
-      socket.emit('MESSAGE_SUCCESS', 'hurrah');
+      // Sending successful add to everybody in the room
+      socket.to(body.room_id).emit('MESSAGE_SUCCESS', 'yay');
+      socket.emit('MESSAGE_SUCCESS', 'yay');
     } catch (error) {
       console.log('Big message edit error!', error);
     }
   });
 
   // Deleting messages
-  socket.on('DELETE_MESSAGE', async body => { // Expecting {user_id, message_id}
+  socket.on('DELETE_MESSAGE', async body => { // Expecting {user_id, message_id, room_id}
     try {
       // Get user privilege from the database to prevent any shady actors from deleting everything
       const userPrivilege = await pool.query('SELECT "privilege" FROM "user" WHERE "id" = $1;', [body.user_id]);
@@ -125,8 +126,9 @@ io.on('connection', socket => {
 
       // By here, the query has been figured out
       const response = await pool.query(query, queryArgs);
-      // Tell client about success
-      socket.emit('MESSAGE_SUCCESS', 'Woo');
+      // Sending successful add to everybody in the room
+      socket.to(body.room_id).emit('MESSAGE_SUCCESS', 'yay');
+      socket.emit('MESSAGE_SUCCESS', 'yay');
     } catch (error) {
       console.log('Big delete error!', error);
     }
