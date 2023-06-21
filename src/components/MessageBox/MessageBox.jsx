@@ -2,6 +2,7 @@ import { useSelector } from "react-redux";
 import { useState } from "react";
 
 import { Container, Typography, Paper, Button, Modal, Box, TextField } from "@mui/material";
+import Swal from "sweetalert2";
 
 export default function MessageBox({ message, socket, room_id }) {
     // Modal input states
@@ -13,8 +14,36 @@ export default function MessageBox({ message, socket, room_id }) {
 
 
     function editMessage() {
-        socket.emit('EDIT_MESSAGE', {user_id: user.id, message_id: message.id, content: newContent, room_id});
+        socket.emit('EDIT_MESSAGE', { user_id: user.id, message_id: message.id, content: newContent, room_id });
         setModalOpen(false);
+    }
+
+
+    function deleteMessage() {
+        Swal.fire({
+            title: 'Are you sure?',
+            showDenyButton: true,
+            denyButtonText: 'No',
+            showConfirmButton: true,
+            confirmButtonText: 'Yes',
+            icon: 'warning'
+        }).then(result => {
+            if (result.isConfirmed) {
+                // Actually delete
+                socket.emit('DELETE_MESSAGE', { user_id: user.id, message_id: message.id, room_id });
+                setModalOpen(false);
+                // Deletion message
+                Swal.fire(
+                    'DELETED',
+                    'The message has been deleted',
+                    'success'
+                );
+            } else {
+                Swal.fire('Not deleted', 'The message has not been deleted', 'info')
+            }
+        });
+
+
     }
 
     return (
@@ -25,7 +54,8 @@ export default function MessageBox({ message, socket, room_id }) {
                     <Typography variant="body1">{message.content}</Typography>
                     <Typography variant="caption">{message.time_posted}</Typography>
                 </Container>
-                {message.user_id === user.id && <Button variant="outlined" color="warning" onClick={() => {setModalOpen(true); setNewContent(message.content)}}>Edit</Button>}
+                {message.user_id === user.id && !message.marked_for_delete && <Button variant="outlined" color="warning" onClick={() => { setModalOpen(true); setNewContent(message.content) }}>Edit</Button>}
+                {user.privilege > 0 && <Button variant="outlined" color="error" onClick={deleteMessage}>delete</Button>}
             </Paper>
             <Modal
                 open={modalOpen}
@@ -37,7 +67,7 @@ export default function MessageBox({ message, socket, room_id }) {
                         <TextField label="Message content" multiline minRows={2} value={newContent} onChange={e => setNewContent(e.target.value)} />
                         <Button variant="outlined" onClick={() => setModalOpen(false)}>Close</Button>
                         <Button variant="contained" color="warning" onClick={editMessage}>edit</Button>
-                        <Button variant="contained" color="error">delete</Button>
+                        <Button variant="contained" color="error" onClick={deleteMessage}>delete</Button>
                     </Paper>
                 </Container>
             </Modal>
