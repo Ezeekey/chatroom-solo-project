@@ -1,10 +1,17 @@
+import { useState } from "react"
+
+import ProfileWidget from "../ProfileWidget/ProfileWidget"
+
 import { TableRow, TableCell, Typography, Button } from "@mui/material"
 
 export default function BuddyRow({buddy}) {
+    const [open, setOpen] = useState(false);
+
     return (
         <TableRow>
             <TableCell>
                 <Typography>N/A</Typography>
+                <ProfileWidget open={open} close={() => setOpen(false)}/>
             </TableCell>
             <TableCell>
                 <Typography>{buddy.username}</Typography>
@@ -13,7 +20,7 @@ export default function BuddyRow({buddy}) {
                 <Typography>{buddy.status}</Typography>
             </TableCell>
             <TableCell>
-                <Button variant="outlined">Options</Button>
+                <Button variant="outlined" onClick={() => setOpen(true)}>Options</Button>
             </TableCell>
         </TableRow>
     )

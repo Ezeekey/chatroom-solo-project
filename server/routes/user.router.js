@@ -14,6 +14,18 @@ router.get('/', rejectUnauthenticated, (req, res) => {
   res.send(req.user);
 });
 
+router.get('/:id', rejectUnauthenticated, async (req, res) => {
+  try {
+    // Contact the database to get single user with no password
+    const response = await pool.query('SELECT id, username, privilege, status FROM "user" WHERE id=$1', [req.params.id]);
+    // Send back user to client
+    res.send(response.rows[0]);
+  } catch (error) {
+    console.log('Single user get ERROR!', error);
+    res.sendStatus(500);
+  }
+});
+
 // Handles POST request with new user data
 // The only thing different from this and every other post we've seen
 // is that the password gets encrypted before being inserted
