@@ -32,7 +32,7 @@ export default function ProfileWidget({ open, close }) {
     }
 
     function addBuddyRequest() {
-
+        dispatch({type: 'BUDDY_REQUEST', payload: selectedUser.id});
     }
 
     return (
@@ -47,19 +47,21 @@ export default function ProfileWidget({ open, close }) {
                     {selectedUser.privilege > 0 ?
                         <Typography variant="body1">Admin</Typography> :
                         <Typography variant="body1">User</Typography>}
-                    {selectedUser.id !== user.id &&
+                    {selectedUser.id !== user.id ?
                         <>
                             {
                                 selectedUser.isBuddy ?
                                     <Typography variant='body1'>buddy</Typography> :
+                                selectedUser.requestSent ?
+                                    <Typography variant="body1">request sent</Typography> :
                                     <Typography variant='body1'>not buddy</Typography>
                             }
                             {
                                 selectedUser.isBuddy ?
                                     <Button variant="contained" color="error" onClick={removeBuddy}>Remove buddy</Button> :
-                                    <Button variant="contained" color="success">Add buddy</Button>
+                                    <Button variant="contained" color="success" disabled={selectedUser.requestSent} onClick={addBuddyRequest} >Add buddy</Button>
                             }
-                        </>
+                        </> : <Typography variant="h5">You</Typography>
                     }
                     <Button variant="outlined" onClick={close}>Close</Button>
                 </Paper>

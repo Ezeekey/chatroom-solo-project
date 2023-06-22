@@ -4,6 +4,7 @@ import axios from "axios";
 export default function* buddySage() {
     yield takeEvery('GET_BUDDY', getBuddy);
     yield takeEvery('REMOVE_BUDDY', removeBuddy);
+    yield takeEvery('BUDDY_REQUEST', addBuddyRequest);
 }
 
 function* getBuddy(action) {
@@ -25,5 +26,16 @@ function* removeBuddy(action) {     // Expects buddy id NOT user id
         yield put({type: 'GET_BUDDY'});
     } catch (error) {
         console.log('Buddy removal error!', error);
+    }
+}
+
+function* addBuddyRequest(action) { // Expects user_id_2
+    try {
+        // Send the request to the server
+        yield axios.post('/api/buddy', { user_id_2: action.payload });
+        // Update the selected user, so the buddy button will grey out when it is clicked
+        yield put({type: 'REQUEST_SENT'});
+    } catch (error) {
+        console.log('Buddy request error!', error);
     }
 }

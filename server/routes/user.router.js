@@ -25,9 +25,17 @@ router.get('/:id', rejectUnauthenticated, async (req, res) => {
     const friendStatus = await pool.query(queryText, [req.user.id, req.params.id]);
     
     if (friendStatus.rows.length > 0) {
-      selectedUser.isBuddy = true;
+      selectedUser.requestSent = true;
+
+      if(friendStatus.rows[0].accepted){
+        selectedUser.isBuddy = true;
+      } else {
+        selectedUser.isBuddy = false;
+      }
+        
       selectedUser.buddy_id = friendStatus.rows[0].id;
     } else {
+      selectedUser.requestSent = false;
       selectedUser.isBuddy = false;
     }
     // Send back user to client
