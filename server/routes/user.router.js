@@ -26,6 +26,7 @@ router.get('/:id', rejectUnauthenticated, async (req, res) => {
     
     if (friendStatus.rows.length > 0) {
       selectedUser.isBuddy = true;
+      selectedUser.buddy_id = friendStatus.rows[0].id;
     } else {
       selectedUser.isBuddy = false;
     }
