@@ -7,7 +7,7 @@ const { rejectUnauthenticated } = require('../modules/authentication-middleware.
 // START GET
 
 // Getting list of buddies for one user
-router.get('/', rejectUnauthenticated, async (req, res) => {     // Expecting {user_id}
+router.get('/', rejectUnauthenticated, async (req, res) => {
     try {
         // Convenient variable to hold query
         const query = 
@@ -44,7 +44,7 @@ router.get('/', rejectUnauthenticated, async (req, res) => {     // Expecting {u
 router.post('/', rejectUnauthenticated, async (req, res) => {  // Expecting { user_id_2}
     try {
         // First checking if buddy relation already exists
-        const buddyRow = await pool.query('SELECT * FROM buddy WHERE (user_id_1 = $1 AND user_id_2 = $2) OR (user_id_1 = $2 AND user_id_2 = $1);', [req.body.user_id_1, req.body.user_id_2]);
+        const buddyRow = await pool.query('SELECT * FROM buddy WHERE (user_id_1 = $1 AND user_id_2 = $2) OR (user_id_1 = $2 AND user_id_2 = $1);', [req.user.id, req.body.user_id_2]);
         if (buddyRow.rows.length > 0) {
             res.sendStatus(400);
             console.log('Client attempted to friend twice');

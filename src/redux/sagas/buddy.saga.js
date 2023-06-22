@@ -5,7 +5,7 @@ export default function* buddySage() {
     yield takeEvery('GET_BUDDY', getBuddy);
 }
 
-function* getBuddy(action) {    // Expecting a user id
+function* getBuddy(action) {
     try {
         // Get from server
         const response = yield axios.get(`/api/buddy/`);
