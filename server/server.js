@@ -25,17 +25,30 @@ io.on('connection', socket => {
   const joinedRooms = [];   // This is for some filthy filthy hackery to store rooms for down below
 
   console.log('Websocket connect');
+  // Convenient variable to hold the user id from the browser cookie.
+  // Cuts down on verbosity
+  const userId = socket.request.session.passport.user;
 
-  if (socket.request.session.passport.user !== undefined) {
-    console.log(socket.request.session.passport.user);
-  } else {
-    console.log('very bad');
-
+  // Quickly allows authentication of sockets
+  function auth() {
+    if (userId !== undefined) {
+      return true;
+    } else {
+      console.log('very bad');
+      return false;
+    }
   }
+  
 
   // Joining a room
   socket.on('JOIN_ROOM', room => {  // Expecting room id
-    console.log(room, 'has been joined');
+    if(!auth()) {
+      console.log('Unauthorized socket attempted to join');
+      // Hopefully quits the room
+      return;
+    }
+
+    console.log(room, 'has been joined by', userId);
 
     // Filthy filthy hackery to leave all other rooms before joining
     for (let i = 0; i < joinedRooms.length; i++) {
@@ -48,14 +61,13 @@ io.on('connection', socket => {
     joinedRooms.push(room);
   });
 
-  // Getting list of rooms
-  socket.on('GET_ROOMS', async user => {
-    const response = await pool.query('SELECT * FROM "chatroom" WHERE "type"=\'public\';');
-    socket.emit('GIVE_ROOMS', response.rows);
-  });
-
   // Getting messages from a room
   socket.on('GET_MESSAGES', async room => {   // Expecting just a single room id for now
+    if(!auth()) {
+      console.log('Unauthorized socket attempted to get messages');
+      // Hopefully quits the room
+      return;
+    }
 
     try {
       // Convenient variable for long pool query
@@ -95,6 +107,11 @@ io.on('connection', socket => {
 
   // Editing messages
   socket.on('EDIT_MESSAGE', async body => {   // Expecting {user_id, message_id, content, room_id}
+    if(!auth()) {
+      console.log('Unauthorized socket attempted to edit messages');
+      // Hopefully quits the room
+      return;
+    }
     try {
       // Modifying the content from body to show that it has been edited
       const editedContent = body.content + ' (edited)';
@@ -117,6 +134,11 @@ io.on('connection', socket => {
 
   // Deleting messages
   socket.on('DELETE_MESSAGE', async body => { // Expecting {user_id, message_id, room_id}
+    if(!auth()) {
+      console.log('Unauthorized socket attempted to delete messages');
+      // Hopefully quits the room
+      return;
+    }
     try {
       // Get user privilege from the database to prevent any shady actors from deleting everything
       const userPrivilege = await pool.query('SELECT "privilege" FROM "user" WHERE "id" = $1;', [body.user_id]);
