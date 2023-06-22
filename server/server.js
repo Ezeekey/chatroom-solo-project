@@ -7,16 +7,31 @@ const app = express();
 // Starting an httpServer const so that socket.io can work
 const httpServer = require('http').createServer(app);
 
+// Importing pool so sockets can make queries to database
+const pool = require('./modules/pool.js');
+
+// Cookies and authentication
+const sessionMiddleware = require('./modules/session-middleware');
+const passport = require('./strategies/user.strategy');
+
 // Actually starting socket.io
 const io = require('socket.io')(httpServer, {});
 
-// Importing pool so sockets can make queries to database
-const pool = require('./modules/pool.js');
+io.use((socket, next) => {
+  sessionMiddleware(socket.request, {}, next);
+});
 
 io.on('connection', socket => {
   const joinedRooms = [];   // This is for some filthy filthy hackery to store rooms for down below
 
   console.log('Websocket connect');
+
+  if (socket.request.session.passport.user !== undefined) {
+    console.log(socket.request.session.passport.user);
+  } else {
+    console.log('very bad');
+
+  }
 
   // Joining a room
   socket.on('JOIN_ROOM', room => {  // Expecting room id
@@ -24,6 +39,8 @@ io.on('connection', socket => {
 
     // Filthy filthy hackery to leave all other rooms before joining
     for (let i = 0; i < joinedRooms.length; i++) {
+      console.log(socket.request.session.passport.user);
+
       socket.leave(joinedRooms[i]);
     }
 
@@ -135,8 +152,6 @@ io.on('connection', socket => {
   })
 });
 
-const sessionMiddleware = require('./modules/session-middleware');
-const passport = require('./strategies/user.strategy');
 
 // Route includes
 const userRouter = require('./routes/user.router');
