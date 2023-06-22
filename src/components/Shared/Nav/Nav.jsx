@@ -40,6 +40,10 @@ function Nav() {
               Buddies
             </Link>
 
+            <Link className="navLink" to="/invite">
+              Invites
+            </Link>
+
             <LogOutButton className="navLink" />
           </>
         )}

@@ -22,6 +22,7 @@ import RegisterPage from './Pages/RegisterPage/RegisterPage';
 import LobbyPage from './Pages/LobbyPage/LobbyPage';
 import RoomPage from './Pages/RoomPage/RoomPage';
 import BuddyPage from './Pages/BuddyPage/BuddyPage';
+import InvitePage from './Pages/InvitePage/InvitePage';
 
 import './App.css';
 
@@ -82,6 +83,10 @@ function App() {
 
           <ProtectedRoute path="/buddy">
             <BuddyPage />
+          </ProtectedRoute>
+
+          <ProtectedRoute path="/invite">
+            <InvitePage />
           </ProtectedRoute>
 
           <Route
