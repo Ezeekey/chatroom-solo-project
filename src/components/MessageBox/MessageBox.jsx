@@ -1,5 +1,7 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
+
+import ProfileWidget from "../ProfileWidget/ProfileWidget";
 
 import { Container, Typography, Paper, Button, Modal, Box, TextField } from "@mui/material";
 import Swal from "sweetalert2";
@@ -8,14 +10,22 @@ export default function MessageBox({ message, socket, room_id }) {
     // Modal input states
     const [newContent, setNewContent] = useState(message.content);
     const [modalOpen, setModalOpen] = useState(false);
+    const [userInfoOpen, setInfoOpen] = useState(false);
 
     // For getting user id
     const user = useSelector(store => store.user);
 
+    // For getting id of user on select for widget
+    const dispatch = useDispatch();
 
     function editMessage() {
         socket.emit('EDIT_MESSAGE', { user_id: user.id, message_id: message.id, content: newContent, room_id });
         setModalOpen(false);
+    }
+
+    function openInfo() {
+        dispatch({type: 'GET_SELECT_USER', payload: message.user_id});
+        setInfoOpen(true);
     }
 
 
@@ -50,7 +60,7 @@ export default function MessageBox({ message, socket, room_id }) {
         <Container>
             <Paper variant="outlined">
                 <Container>
-                    <Typography variant="h6">{message.username}</Typography>
+                    <Typography variant="h6" onClick={openInfo}>{message.username}</Typography>
                     <Typography variant="body1">{message.content}</Typography>
                     <Typography variant="caption">{message.time_posted}</Typography>
                 </Container>
@@ -71,6 +81,7 @@ export default function MessageBox({ message, socket, room_id }) {
                     </Paper>
                 </Container>
             </Modal>
+            <ProfileWidget open={userInfoOpen} close={() => setInfoOpen(false)} />
         </Container>
     )
 }
