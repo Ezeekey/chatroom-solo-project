@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 
 import ProfileWidget from "../ProfileWidget/ProfileWidget"
 
@@ -6,6 +7,14 @@ import { TableRow, TableCell, Typography, Button } from "@mui/material"
 
 export default function BuddyRow({buddy}) {
     const [open, setOpen] = useState(false);
+
+    // Allows user data to be gotten
+    const dispatch = useDispatch();
+
+    function openProfile() {
+        dispatch({type: 'GET_SELECT_USER', payload: buddy.user_id});
+        setOpen(true);
+    }
 
     return (
         <TableRow>
@@ -20,7 +29,7 @@ export default function BuddyRow({buddy}) {
                 <Typography>{buddy.status}</Typography>
             </TableCell>
             <TableCell>
-                <Button variant="outlined" onClick={() => setOpen(true)}>Options</Button>
+                <Button variant="outlined" onClick={openProfile}>Options</Button>
             </TableCell>
         </TableRow>
     )

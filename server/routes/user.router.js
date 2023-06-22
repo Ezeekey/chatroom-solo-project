@@ -18,8 +18,19 @@ router.get('/:id', rejectUnauthenticated, async (req, res) => {
   try {
     // Contact the database to get single user with no password
     const response = await pool.query('SELECT id, username, privilege, status FROM "user" WHERE id=$1', [req.params.id]);
+    // Put response into object so it may be slightly modified
+    const selectedUser = response.rows[0];
+    // Checking friend status
+    const queryText = 'SELECT * FROM buddy WHERE (user_id_1 = $1 AND user_id_2 = $2) OR (user_id_1 = $2 AND user_id_2 = $1);'
+    const friendStatus = await pool.query(queryText, [req.user.id, req.params.id]);
+    
+    if (friendStatus.rows.length > 0) {
+      selectedUser.isBuddy = true;
+    } else {
+      selectedUser.isBuddy = false;
+    }
     // Send back user to client
-    res.send(response.rows[0]);
+    res.send(selectedUser);
   } catch (error) {
     console.log('Single user get ERROR!', error);
     res.sendStatus(500);
