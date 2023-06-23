@@ -24,6 +24,11 @@ export default function NewRoomPage() {
         setRoomType('public');
     }
 
+    function createRoom() {
+        dispatch({type: 'CREATE_ROOM', payload: {room_name: roomName, type: roomType}});
+        goBack();
+    }
+
     return (
         <Container align="center">
             <Paper>
@@ -33,7 +38,7 @@ export default function NewRoomPage() {
                     <MenuItem value="public">Public</MenuItem>
                 </Select>
                 <Container align="center">
-                    <Button variant="contained" color="success">Create</Button>
+                    <Button variant="contained" color="success" onClick={createRoom}>Create</Button>
                     <Button variant="outlined" onClick={goBack}>Cancel</Button>
                 </Container>
             </Paper>
