@@ -13,11 +13,17 @@ import LobbyRow from "../../LobbyRow/LobbyRow"
 export default function LobbyPage() {
     // This is where the list of lobbies comes from
     const lobbies = useSelector(store => store.lobby);
+    // This allows for the page to change when the create new room button is pressed
+    const history = useHistory();
+
+    function goToCreatePage() {
+        history.push('/newroom');
+    }
 
     return (
         <Container>
             <Typography variant="h3" align="center">Lobbies</Typography>
-            <Button variant="contained">Create room</Button>
+            <Button variant="contained" onClick={goToCreatePage}>Create room</Button>
             <TableContainer>
                 <Table>
                     <TableHead>
