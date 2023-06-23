@@ -24,6 +24,8 @@ function* removeBuddy(action) {     // Expects buddy id NOT user id
         const response = yield axios.delete(`/api/buddy/${action.payload}`);
         // Refresh the list
         yield put({type: 'GET_BUDDY'});
+        // Refresh the request list
+        yield put({type: 'GET_BUD_INVITES'})
     } catch (error) {
         console.log('Buddy removal error!', error);
     }

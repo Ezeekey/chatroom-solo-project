@@ -40,7 +40,7 @@ router.get('/', rejectUnauthenticated, async (req, res) => {
 router.get('/invites', rejectUnauthenticated, async (req, res) => {
     try {
         // Variable to store the query text, because it will be longish
-        const query = 'SELECT username FROM buddy JOIN "user" ON user_id_1 = "user".id WHERE user_id_2 = $1';
+        const query = 'SELECT username, buddy.id FROM buddy JOIN "user" ON user_id_1 = "user".id WHERE user_id_2 = $1';
         // Contacting database to get buddy invites
         const response = await pool.query(query, [req.user.id]);
         res.send(response.rows);
