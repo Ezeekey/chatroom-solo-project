@@ -75,9 +75,11 @@ io.on('connection', socket => {
         'SELECT "message"."id", "user_id", "username", "content", "time_posted", "marked_for_delete" FROM "message" ' +
         'JOIN "user" ON "user_id" = "user"."id"' +
         'WHERE "room_id" = $1 ' +
-        'ORDER BY "time_posted" LIMIT 50;';
+        'ORDER BY "time_posted" DESC LIMIT 50;';
 
       const response = await pool.query(query, [room]);
+      // The response has to be reversed here as a workaround for unwanted behavior from SQL
+      response.rows.reverse();
 
       // Send back to client
       socket.emit('GIVE_MESSAGES', response.rows);
