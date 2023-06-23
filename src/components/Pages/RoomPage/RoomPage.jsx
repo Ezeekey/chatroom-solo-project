@@ -74,8 +74,9 @@ export default function RoomPage() {
         <Container>
             <Paper>
                 <Typography variant="h3"> {roomName} </Typography>
-                <Box className="messageBox">
+                <Box id="messageBox">
                     {messages.map(message => <MessageBox key={message.id} message={message} socket={socket} room_id={param.id} />)}
+                    <div id="boxAnchor"></div>
                 </Box>
                 <PostMessageForm socket={socket} />
             </Paper>

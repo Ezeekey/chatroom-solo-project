@@ -1,4 +1,14 @@
-.messageBox {
+#messageBox {
     height: 375px;
+
     overflow: auto;
+}
+
+#messageBox * {
+    overflow-anchor: none;
+}
+
+#boxAnchor {
+    overflow-anchor: auto;
+    height: 5px;
 }
