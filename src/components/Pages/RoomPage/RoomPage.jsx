@@ -6,7 +6,8 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 
 // Style import
-import { List, Typography, Container } from "@mui/material";
+import { Typography, Container, Paper, Box } from "@mui/material";
+import './RoomPage.css';
 
 // Component import
 import MessageBox from "../../MessageBox/MessageBox";
@@ -71,9 +72,13 @@ export default function RoomPage() {
 
     return (
         <Container>
-            <Typography variant="h3"> {roomName} </Typography>
-            {messages.map(message => <MessageBox key={message.id} message={message} socket={socket} room_id={param.id} />)}
-            <PostMessageForm socket={socket} />
+            <Paper>
+                <Typography variant="h3"> {roomName} </Typography>
+                <Box className="messageBox">
+                    {messages.map(message => <MessageBox key={message.id} message={message} socket={socket} room_id={param.id} />)}
+                </Box>
+                <PostMessageForm socket={socket} />
+            </Paper>
         </Container>
     )
 }
