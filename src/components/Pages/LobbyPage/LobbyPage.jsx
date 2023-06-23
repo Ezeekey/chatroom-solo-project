@@ -37,9 +37,6 @@ export default function LobbyPage() {
                             <TableCell>
                                 <Typography variant="h6">Lobby visibility</Typography>
                             </TableCell>
-                            <TableCell>
-                                <Typography variant="h6">Join?</Typography>
-                            </TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>

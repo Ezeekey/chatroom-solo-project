@@ -1,6 +1,7 @@
 import { useHistory } from "react-router-dom/cjs/react-router-dom"
 
 import { TableRow, TableCell, BUtton, Typography, Button } from "@mui/material"
+import "./LobbyRow.css";
 
 export default function LobbyRow({ lobby }) {
     // This is to allow the user to be directed to the chatroom
@@ -11,7 +12,7 @@ export default function LobbyRow({ lobby }) {
     }
 
     return (
-        <TableRow>
+        <TableRow onClick={goToRoom} className="lobbyRow">
             <TableCell>
                 <Typography>{lobby.room_name}</Typography>
             </TableCell>
@@ -20,9 +21,6 @@ export default function LobbyRow({ lobby }) {
             </TableCell>
             <TableCell>
                 <Typography>{lobby.type}</Typography>
-            </TableCell>
-            <TableCell>
-                <Button variant="contained" color="success" onClick={goToRoom}>Join</Button>
             </TableCell>
         </TableRow>
     )

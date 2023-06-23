@@ -30,9 +30,6 @@ export default function BuddyPage() {
                         <TableCell>
                             <Typography variant="h6">Status</Typography>
                         </TableCell>
-                        <TableCell>
-                            <Typography variant="h6">Options</Typography>
-                        </TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
