@@ -1,5 +1,6 @@
 #messageBox {
-    height: 375px;
+    min-height: 375px;
+    height: 60vh;
 
     overflow: auto;
 }
