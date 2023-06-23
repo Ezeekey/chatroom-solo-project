@@ -27,11 +27,11 @@ io.on('connection', socket => {
   console.log('Websocket connect');
   // Convenient variable to hold the user id from the browser cookie.
   // Cuts down on verbosity
-  const userId = socket.request.session.passport.user;
+  const userId = socket.request.session.passport || 'no';
 
   // Quickly allows authentication of sockets
   function auth() {
-    if (userId !== undefined) {
+    if (userId.user !==  undefined) {
       return true;
     } else {
       console.log('very bad');
@@ -48,7 +48,7 @@ io.on('connection', socket => {
       return;
     }
 
-    console.log(room, 'has been joined by', userId);
+    console.log(room, 'has been joined by', userId.user);
 
     // Filthy filthy hackery to leave all other rooms before joining
     for (let i = 0; i < joinedRooms.length; i++) {
