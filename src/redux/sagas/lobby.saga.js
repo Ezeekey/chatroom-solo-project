@@ -3,6 +3,7 @@ import axios from 'axios';
 
 export default function* lobbySaga() {
     yield takeEvery('GET_LOBBIES', getLobbies);
+    yield takeEvery('CREATE_ROOM', createRoom);
 }
 
 function* getLobbies(action) {
@@ -13,5 +14,16 @@ function* getLobbies(action) {
         yield put({type: 'SET_LOBBIES', payload: response.data});
     } catch (error) {
         alert(`Oops! Lobby get error! ${error}`);
+    }
+}
+
+function *createRoom(action) {  // Expecting {room_name, type}
+    try {
+        // Telling server to make new room
+        yield axios.post('/api/rooms/', {room_name: action.payload.room_name, type: action.payload.type});
+        // Refresh the room list
+        yield put({type: 'GET_LOBBIES'});
+    } catch (error) {
+        console.log('Room creation error!', error);
     }
 }

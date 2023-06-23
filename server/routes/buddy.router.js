@@ -10,7 +10,7 @@ const { rejectUnauthenticated } = require('../modules/authentication-middleware.
 router.get('/', rejectUnauthenticated, async (req, res) => {
     try {
         // Convenient variable to hold query
-        const query = 
+        const query =
             'SELECT * FROM ' +
             '(SELECT "buddy"."id", "user_id_2" AS "user_id", "accepted" FROM "user" ' +
             'JOIN "buddy" ON "user_id_1" = "user"."id" WHERE "user"."id" = $1) AS first ' +
@@ -22,7 +22,7 @@ router.get('/', rejectUnauthenticated, async (req, res) => {
         // By here, this is a joined table consisting of just ids.
 
         // Adding names to these ids
-        for ( item of response.rows ) {     // Feels dirty, but it works.
+        for (item of response.rows) {     // Feels dirty, but it works.
             const nameRow = await pool.query('SELECT username, status FROM "user" WHERE id = $1', [item.user_id]);
             item.username = nameRow.rows[0].username;
             item.status = nameRow.rows[0].status;
@@ -40,7 +40,7 @@ router.get('/', rejectUnauthenticated, async (req, res) => {
 router.get('/invites', rejectUnauthenticated, async (req, res) => {
     try {
         // Variable to store the query text, because it will be longish
-        const query = 'SELECT username, buddy.id FROM buddy JOIN "user" ON user_id_1 = "user".id WHERE user_id_2 = $1';
+        const query = 'SELECT username, buddy.id FROM buddy JOIN "user" ON user_id_1 = "user".id WHERE user_id_2 = $1 AND accepted = false';
         // Contacting database to get buddy invites
         const response = await pool.query(query, [req.user.id]);
         res.send(response.rows);
@@ -92,5 +92,23 @@ router.delete('/:id', rejectUnauthenticated, async (req, res) => {
 });
 
 // END DELETE
+
+// START PUT
+
+// Accepting buddy requests
+router.put('/invite/:id', rejectUnauthenticated, async (req, res) => {
+    try {
+        // Query only allows changes if the user themself are accepting it
+        const query = 'UPDATE buddy SET accepted = true WHERE id = $1 AND user_id_2 = $2';
+        // Contact pool to change buddy acceptance to true
+        await pool.query(query, [req.params.id, req.user.id]);
+
+        res.sendStatus(200);
+    } catch (error) {
+        console.log('Big accept invite error!', error);
+    }
+});
+
+// END PUT
 
 module.exports = router;
