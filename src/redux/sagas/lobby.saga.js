@@ -13,7 +13,7 @@ function* getLobbies(action) {
         // Put the list on the server
         yield put({type: 'SET_LOBBIES', payload: response.data});
     } catch (error) {
-        alert(`Oops! Lobby get error! ${error}`);
+        console.log(`Oops! Lobby get error! ${error}`);
     }
 }
 
