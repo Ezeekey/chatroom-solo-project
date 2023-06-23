@@ -31,7 +31,7 @@ CREATE TABLE "message" (
 CREATE TABLE "room_member" (
     "id" SERIAL PRIMARY KEY, 
     "user_id" INT REFERENCES "user", 
-    "room_id" INT REFERENCES "chatroom"
+    "room_id" INT REFERENCES "chatroom" ON DELETE CASCADE
 );
 
 CREATE TABLE "buddy" (

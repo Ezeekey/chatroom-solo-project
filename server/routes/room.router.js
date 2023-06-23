@@ -40,12 +40,18 @@ router.get('/:id', rejectUnauthenticated, async (req, res) => {
 
 router.post('/', rejectUnauthenticated, async (req, res) => {  // Expecting {room_name, type}
     try {
+        // Start transaction
+        await pool.query('BEGIN;');
         // Convenient pool query variable
         const query =
             'INSERT INTO "chatroom" ("room_name", "type", "creator_id") VALUES ' +
-            '($1, $2, $3);'
+            '($1, $2, $3) RETURNING *;'
         const response = await pool.query(query, [req.body.room_name, req.body.type, req.user.id]);
 
+        // Create a room_member relation
+        await pool.query('INSERT INTO room_member (user_id, room_id) VALUES ($1, $2);', [req.user.id, response.rows[0].id]);
+        // end transaction
+        await pool.query('COMMIT;');
         // Tell client it's all good
         res.sendStatus(201);
     } catch (error) {
