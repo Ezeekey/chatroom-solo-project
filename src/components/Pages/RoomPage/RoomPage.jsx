@@ -108,14 +108,47 @@ export default function RoomPage() {
             showConfirmButton: true,
             showDenyButton: true
         }).then(result => {
-            if(result.isConfirmed) {
-                dispatch({ type: 'DELETE_ROOM', payload: param.id});
+            if (result.isConfirmed) {
+                dispatch({ type: 'DELETE_ROOM', payload: param.id });
                 history.push('/lobby');
                 Swal.fire('DELETED', '', 'success');
             } else {
                 Swal.fire('The room is safe!', 'For now', 'success');
             }
         })
+    }
+
+
+    async function handleMemberButton() {
+        if (membership.length > 0) {
+            // Ending membership
+            await removeMembership();
+        } else {
+            // Joining membership
+            await addMembership();
+        }
+
+        // Refresh the data
+        getMembership();
+    }
+
+
+    async function addMembership() {
+        try {
+            // Sending data to server, and waiting for it to come back
+            await axios.post('/api/rooms/membership', {room_id: param.id});
+        } catch (error) {
+            console.log('Membership addition error!', error);
+        }
+    }
+
+
+    async function removeMembership() {
+        try {
+            await axios.delete(`/api/rooms/membership/${membership[0].id}`);
+        } catch (error) {
+            console.log('Membership removal error!', error);
+        }
     }
 
     return (
@@ -126,11 +159,12 @@ export default function RoomPage() {
                     (user.privilege > 0 || user.id === creatorId) &&
                     <Button variant="outlined" color="error" onClick={deleteRoom}>Delete room</Button>
                 }
-                <Button 
-                    variant="outlined" 
+                <Button
+                    variant="outlined"
                     color={membership.length > 0 ? 'warning' : 'primary'}
-                    >
-                        {membership.length > 0 ? 'End room membership' : 'Become a member'}
+                    onClick={handleMemberButton}
+                >
+                    {membership.length > 0 ? 'End room membership' : 'Become a member'}
                 </Button>
                 <Box id="messageBox">
                     {messages.map(message => <MessageBox key={message.id} message={message} socket={socket} room_id={param.id} />)}
