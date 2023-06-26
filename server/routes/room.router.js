@@ -22,6 +22,27 @@ router.get('/', rejectUnauthenticated, async (req, res) => {
     }
 });
 
+// Getting room membership
+router.get('/membership/:id', rejectUnauthenticated, async (req, res) => {
+    try {
+        // Convenient variable to hold query
+        const query = 
+            'SELECT room_member.id FROM room_member ' +
+            'JOIN "user" ON "user".id = user_id ' +
+            'JOIN chatroom ON chatroom.id = room_id ' +
+            'WHERE user_id = $1 AND room_id = $2;';
+        
+        // Contact database to get at least one row
+        const response = await pool.query(query, [req.user.id, req.params.id]);
+
+        // Send the row to the client
+        res.send(response.rows);
+    } catch (error) {
+        console.log('Room member get error!', error);
+        res.sendStatus(500);
+    }
+})
+
 // Getting the name of a room and creator_id, I don't like
 router.get('/:id', rejectUnauthenticated, async (req, res) => {
     try {
