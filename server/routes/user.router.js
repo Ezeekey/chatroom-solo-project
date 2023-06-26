@@ -46,6 +46,19 @@ router.get('/:id', rejectUnauthenticated, async (req, res) => {
   }
 });
 
+// Updating user status
+router.put('/status', rejectUnauthenticated, async (req, res) => {  // Expecting {status}
+  try {
+    // Contacting the database to update the user status to a new status
+    await pool.query('UPDATE "user" SET status = $1 WHERE id = $2', [req.body.status, req.user.id]);
+    // Tell the client about success
+    res.sendStatus(200);
+  } catch (error) {
+    console.log('User status put error!', error);
+    res.sendStatus(500);
+  }
+});
+
 // Handles POST request with new user data
 // The only thing different from this and every other post we've seen
 // is that the password gets encrypted before being inserted
