@@ -1,12 +1,12 @@
 // Functional imports
 import { useState, useEffect } from "react";
 import { io } from "socket.io-client";
-import { useParams } from "react-router-dom/cjs/react-router-dom";
+import { useParams, useHistory } from "react-router-dom/cjs/react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
 
 // Style import
-import { Typography, Container, Paper, Box } from "@mui/material";
+import { Typography, Container, Paper, Box, Button } from "@mui/material";
 import './RoomPage.css';
 
 // Component import
@@ -49,14 +49,22 @@ export default function RoomPage() {
 
     // Holds the room name
     const [roomName, setRoomName] = useState('');
+    const [creatorId, setCreatorId] = useState(0);
     // Argh
     // Holds each chat message
     const [messages, setMessages] = useState([]);
 
+    // Hold the user data here
+    const user = useSelector(store => store.user);
+
     useEffect(() => {
         // Getting the name of the room
         axios.get(`/api/rooms/${param.id}`)
-            .then(response => setRoomName(response.data.room_name))
+            .then(response => {
+                setRoomName(response.data.room_name);
+                setCreatorId(response.data.creator_id);
+                console.log(response.data);
+            })
             .catch(error => console.log('Getting room name error!', error));
         // Getting the messages from the chat on start
         socket.emit('GET_MESSAGES', param.id);
@@ -74,6 +82,10 @@ export default function RoomPage() {
         <Container>
             <Paper>
                 <Typography variant="h3"> {roomName} </Typography>
+                {
+                    user.privilege > 0 || user.id === creatorId &&
+                    <Button variant="outlined" color="error">Delete room</Button>
+                }
                 <Box id="messageBox">
                     {messages.map(message => <MessageBox key={message.id} message={message} socket={socket} room_id={param.id} />)}
                     <div id="boxAnchor"></div>
