@@ -85,6 +85,7 @@ router.post('/', rejectUnauthenticated, async (req, res) => {  // Expecting {roo
 
 // START DELETE
 
+// Deleting chat rooms
 router.delete('/:id', rejectUnauthenticated, async (req, res) => {    // id param is room_id
     try {
         // Convenient query text variable
@@ -97,6 +98,18 @@ router.delete('/:id', rejectUnauthenticated, async (req, res) => {    // id para
         res.sendStatus(204);
     } catch (error) {
         console.log('Room deletion error!', error);
+        res.sendStatus(500);
+    }
+});
+
+// Deleting memberships
+router.delete('/membership/:id', rejectUnauthenticated, async (req, res) => {
+    try {
+        // Contact database to delete membership row, then tell client that operation was successful
+        await pool.query('DELETE FROM room_member WHERE id = $1 AND user_id = $2', [req.params.id, req.user.id]);
+        res.sendStatus(204);
+    } catch (error) {
+        console.log('Membership delete error!', error);
         res.sendStatus(500);
     }
 });
