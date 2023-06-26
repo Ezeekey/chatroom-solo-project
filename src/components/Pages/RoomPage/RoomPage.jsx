@@ -51,7 +51,8 @@ export default function RoomPage() {
     // Holds the room name
     const [roomName, setRoomName] = useState('');
     const [creatorId, setCreatorId] = useState(0);
-    // Argh
+    // Holds room membership, if this array is greater than 0 than this means the user is a member
+    const [membership, setMembership] = useState([]);
     // Holds each chat message
     const [messages, setMessages] = useState([]);
 
@@ -70,9 +71,11 @@ export default function RoomPage() {
             .then(response => {
                 setRoomName(response.data.room_name);
                 setCreatorId(response.data.creator_id);
-                console.log(response.data);
             })
             .catch(error => console.log('Getting room name error!', error));
+        // Getting room membership
+        getMembership();
+
         // Getting the messages from the chat on start
         socket.emit('GET_MESSAGES', param.id);
         // Enable receiving messages
@@ -84,6 +87,17 @@ export default function RoomPage() {
             setMessages(messageList);
         });
     }, []);
+
+
+    async function getMembership() {
+        try {
+            // Contact server
+            const response = await axios.get(`/api/rooms/membership/${param.id}`);
+            setMembership(response.data);
+        } catch (error) {
+            console.log('Membership error!', error);
+        }
+    }
 
 
     function deleteRoom() {
@@ -109,9 +123,15 @@ export default function RoomPage() {
             <Paper>
                 <Typography variant="h3"> {roomName} </Typography>
                 {
-                    user.privilege > 0 || user.id === creatorId &&
+                    (user.privilege > 0 || user.id === creatorId) &&
                     <Button variant="outlined" color="error" onClick={deleteRoom}>Delete room</Button>
                 }
+                <Button 
+                    variant="outlined" 
+                    color={membership.length > 0 ? 'warning' : 'primary'}
+                    >
+                        {membership.length > 0 ? 'End room membership' : 'Become a member'}
+                </Button>
                 <Box id="messageBox">
                     {messages.map(message => <MessageBox key={message.id} message={message} socket={socket} room_id={param.id} />)}
                     <div id="boxAnchor"></div>
