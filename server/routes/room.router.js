@@ -67,9 +67,10 @@ router.post('/', rejectUnauthenticated, async (req, res) => {  // Expecting {roo
 router.delete('/:id', rejectUnauthenticated, async (req, res) => {    // id param is room_id
     try {
         // Convenient query text variable
+        // Checking user privilege allows admins to delete rooms that they don't own
         const query =
-            'DELETE FROM "chatroom" WHERE "creator_id" = $1 AND "id" = $2;';
-        pool.query(query, [req.user.id, req.params.id]);
+            'DELETE FROM "chatroom" WHERE ("creator_id" = $1 OR $3 > 0) AND "id" = $2;';
+        pool.query(query, [req.user.id, req.params.id, req.user.privilege]);
 
         // Send success to client
         res.sendStatus(204);
