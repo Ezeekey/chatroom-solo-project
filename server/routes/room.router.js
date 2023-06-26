@@ -12,8 +12,13 @@ router.get('/', rejectUnauthenticated, async (req, res) => {
         // Convenient variable for longish query
         const query =
             'SELECT "chatroom"."id", "room_name", "username", "type" FROM "chatroom" ' +
-            'JOIN "user" ON "user"."id" = "creator_id" WHERE type=\'public\';'
-        const response = await pool.query(query);
+            'JOIN "user" ON "user"."id" = "creator_id" ' + 
+            'WHERE type=\'public\' ' +
+            'UNION ALL ' +
+            'SELECT chatroom.id, room_name, username, type FROM chatroom JOIN "user" ON "user".id = creator_id ' +
+            'JOIN room_member ON chatroom.id = room_id AND type = \'private\' ' +
+            'WHERE user_id = $1 OR $2 > 1 ORDER BY type;';
+        const response = await pool.query(query, [req.user.id, req.user.privilege]);
         // Send to client
         res.send(response.rows);
     } catch (error) {
