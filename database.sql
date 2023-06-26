@@ -47,3 +47,10 @@ CREATE TABLE "block_list" (
     "blocked_user_id" INT REFERENCES "user", 
     "block_type" VARCHAR(30) NOT NULL
 );
+
+CREATE TABLE "room_invite" (
+    "id" SERIAL PRIMARY KEY,
+    "inviter_id" INT REFERENCES "user",
+    "invitee_id" INT REFERENCES "user",
+    "room_id" INT REFERENCES "chatroom"
+);
