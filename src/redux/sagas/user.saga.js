@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { put, takeLatest } from 'redux-saga/effects';
+import { put, takeEvery } from 'redux-saga/effects';
 
 // worker Saga: will be fired on "FETCH_USER" actions
 function* fetchUser() {
@@ -24,8 +24,20 @@ function* fetchUser() {
   }
 }
 
+function* setUserStatus(action) { // Expecting singular status for payload
+  try {
+    // Contact the server with new status
+    yield axios.put('/api/user/status', {status: action.payload});
+    // Get new user information from server
+    yield put({ type: 'FETCH_USER' });
+  } catch (error) {
+    console.log('Set status failure!', error);
+  }
+}
+
 function* userSaga() {
-  yield takeLatest('FETCH_USER', fetchUser);
+  yield takeEvery('FETCH_USER', fetchUser);
+  yield takeEvery('SET_STATUS', setUserStatus);
 }
 
 export default userSaga;

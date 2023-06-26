@@ -2,13 +2,15 @@ import React from 'react';
 import { useState } from 'react';
 
 import LogOutButton from '../../Shared/LogOutButton/LogOutButton';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { Container, Typography, TextField, Button } from '@mui/material';
 
 function UserPage() {
   // this component doesn't do much to start, just renders some user reducer info to the DOM
   const user = useSelector((store) => store.user);
+  // Allows for the server to be contacted
+  const dispatch = useDispatch();
 
   // For editing user statux
   const [editStatusMode, setEditStatusMode] = useState(false);
@@ -16,6 +18,8 @@ function UserPage() {
 
 
   function submitNewStatus() {
+    // Call the server with new status
+    dispatch({ type: 'SET_STATUS', payload: newStatus});
     // Clear the input, and reset the mode to view new status
     setNewStatus('');
     setEditStatusMode(false);
