@@ -2,12 +2,13 @@
 import { useState, useEffect } from "react";
 import { io } from "socket.io-client";
 import { useParams, useHistory } from "react-router-dom/cjs/react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 
 // Style import
 import { Typography, Container, Paper, Box, Button } from "@mui/material";
 import './RoomPage.css';
+import Swal from "sweetalert2";
 
 // Component import
 import MessageBox from "../../MessageBox/MessageBox";
@@ -57,6 +58,12 @@ export default function RoomPage() {
     // Hold the user data here
     const user = useSelector(store => store.user);
 
+    // Allows for the room to be deleted, and also redirect to the lobby
+    const dispatch = useDispatch();
+    const history = useHistory();
+
+
+    // On first render
     useEffect(() => {
         // Getting the name of the room
         axios.get(`/api/rooms/${param.id}`)
@@ -78,13 +85,32 @@ export default function RoomPage() {
         });
     }, []);
 
+
+    function deleteRoom() {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Once you delete a room, it can not be undone',
+            icon: 'warning',
+            showConfirmButton: true,
+            showDenyButton: true
+        }).then(result => {
+            if(result.isConfirmed) {
+                dispatch({ type: 'DELETE_ROOM', payload: param.id});
+                history.push('/lobby');
+                Swal.fire('DELETED', '', 'success');
+            } else {
+                Swal.fire('The room is safe!', 'For now', 'success');
+            }
+        })
+    }
+
     return (
         <Container>
             <Paper>
                 <Typography variant="h3"> {roomName} </Typography>
                 {
                     user.privilege > 0 || user.id === creatorId &&
-                    <Button variant="outlined" color="error">Delete room</Button>
+                    <Button variant="outlined" color="error" onClick={deleteRoom}>Delete room</Button>
                 }
                 <Box id="messageBox">
                     {messages.map(message => <MessageBox key={message.id} message={message} socket={socket} room_id={param.id} />)}

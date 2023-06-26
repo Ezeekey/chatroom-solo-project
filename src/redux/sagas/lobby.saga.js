@@ -4,6 +4,7 @@ import axios from 'axios';
 export default function* lobbySaga() {
     yield takeEvery('GET_LOBBIES', getLobbies);
     yield takeEvery('CREATE_ROOM', createRoom);
+    yield takeEvery('DELETE_ROOM', deleteRoom);
 }
 
 function* getLobbies(action) {
@@ -25,5 +26,16 @@ function *createRoom(action) {  // Expecting {room_name, type}
         yield put({type: 'GET_LOBBIES'});
     } catch (error) {
         console.log('Room creation error!', error);
+    }
+}
+
+function *deleteRoom(action) {  // Expecting room id
+    try {
+        // Telling server to delete room
+        yield axios.delete(`/api/rooms/${action.payload}`);
+        // Refresh the room list
+        yield put({type: 'GET_LOBBIES'});
+    } catch (error) {
+        console.log('Room deletion error!', error);
     }
 }
