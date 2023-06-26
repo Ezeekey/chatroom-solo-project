@@ -52,7 +52,7 @@ router.get('/membership/:id', rejectUnauthenticated, async (req, res) => {
 router.get('/:id', rejectUnauthenticated, async (req, res) => {
     try {
         // Getting name from the database using id
-        const response = await pool.query('SELECT room_name, creator_id FROM chatroom WHERE id = $1', [req.params.id]);
+        const response = await pool.query('SELECT room_name, creator_id, type FROM chatroom WHERE id = $1', [req.params.id]);
         // Giving just the name to the client
         res.send(response.rows[0]);
     } catch (error) {

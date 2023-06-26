@@ -53,6 +53,8 @@ export default function RoomPage() {
     const [creatorId, setCreatorId] = useState(0);
     // Holds room membership, if this array is greater than 0 than this means the user is a member
     const [membership, setMembership] = useState([]);
+    // Holds type so the app knows if it should kick user from room if not a member when it is private
+    const [roomType, setRoomType] = useState('');
     // Holds each chat message
     const [messages, setMessages] = useState([]);
 
@@ -71,6 +73,7 @@ export default function RoomPage() {
             .then(response => {
                 setRoomName(response.data.room_name);
                 setCreatorId(response.data.creator_id);
+                setRoomType(response.data.type);
             })
             .catch(error => console.log('Getting room name error!', error));
         // Getting room membership
@@ -93,6 +96,10 @@ export default function RoomPage() {
         try {
             // Contact server
             const response = await axios.get(`/api/rooms/membership/${param.id}`);
+            if(response.data.length === 0 && roomType !== 'public' && roomType !== '' && user.privilege < 2) {
+                // User is not a member and is in a private room
+                history.push('/lobby');
+            }
             setMembership(response.data);
         } catch (error) {
             console.log('Membership error!', error);
