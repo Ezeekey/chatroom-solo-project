@@ -26,12 +26,12 @@ router.get('/', rejectUnauthenticated, async (req, res) => {
 router.get('/membership/:id', rejectUnauthenticated, async (req, res) => {
     try {
         // Convenient variable to hold query
-        const query = 
+        const query =
             'SELECT room_member.id FROM room_member ' +
             'JOIN "user" ON "user".id = user_id ' +
             'JOIN chatroom ON chatroom.id = room_id ' +
             'WHERE user_id = $1 AND room_id = $2;';
-        
+
         // Contact database to get at least one row
         const response = await pool.query(query, [req.user.id, req.params.id]);
 
@@ -59,6 +59,7 @@ router.get('/:id', rejectUnauthenticated, async (req, res) => {
 
 // START POST
 
+// Creating a new chat room
 router.post('/', rejectUnauthenticated, async (req, res) => {  // Expecting {room_name, type}
     try {
         // Start transaction
@@ -77,6 +78,29 @@ router.post('/', rejectUnauthenticated, async (req, res) => {  // Expecting {roo
         res.sendStatus(201);
     } catch (error) {
         console.log('Nope, room posting error!', error);
+        res.sendStatus(500);
+    }
+});
+
+// Adding a new membership
+router.post('/membership', rejectUnauthenticated, async (req, res) => {     // Expecting room_id
+    try {
+        // Checking that user is already a member first, then checking if the function should go forward
+        const existanceResponse = await pool.query('SELECT * FROM room_member WHERE user_id = $1 AND room_id = $2', [req.user.id, req.body.room_id]);
+
+        if (existanceResponse.rows > 0) {
+            // Membership already exists. Quit
+            res.sendStatus(400);
+            return;
+        }
+
+        // By here, this is a good request
+
+        // Contacting pool to create new room_member entry, than sending a code back to the client
+        await pool.query('INSERT INTO room_member (user_id, room_id) VALUES ($1, $2);', [req.user.id, req.body.room_id]);
+        res.sendStatus(201);
+    } catch (error) {
+        console.log('Membership post error!', error);
         res.sendStatus(500);
     }
 });
