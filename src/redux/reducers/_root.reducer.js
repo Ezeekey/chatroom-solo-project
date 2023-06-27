@@ -5,6 +5,8 @@ import lobby from './lobby.reducer';
 import buddy from './buddy.reducer';
 import selectUser from './selecteduser.reducer';
 import budInvites from './buddyinvite.reducer';
+import roomInvites from './roominvite.reducer';
+
 
 // rootReducer is the primary reducer for our entire project
 // It bundles up all of the other reducers so our project can use them.
@@ -18,7 +20,8 @@ const rootReducer = combineReducers({
   lobby,
   buddy,
   selectUser,
-  budInvites
+  budInvites,
+  roomInvites
 });
 
 export default rootReducer;

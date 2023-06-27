@@ -17,6 +17,7 @@ export default function InvitePage() {
     // Getting invites on first render
     useEffect(() => {
         dispatch({ type: 'GET_BUD_INVITES' });
+        dispatch({ type: 'GET_ROOM_INVITE' });
     }, []);
 
     return (

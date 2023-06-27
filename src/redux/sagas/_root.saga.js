@@ -6,6 +6,7 @@ import lobbySaga from './lobby.saga';
 import buddySage from './buddy.saga';
 import selectUserSaga from './selectuser.saga';
 import buddyInviteSaga from './buddyinvite.saga';
+import roomInviteSaga from './roominvite.saga';
 
 // rootSaga is the primary saga.
 // It bundles up all of the other sagas so our project can use them.
@@ -22,6 +23,7 @@ export default function* rootSaga() {
     lobbySaga(),
     buddySage(),
     selectUserSaga(),
-    buddyInviteSaga()
+    buddyInviteSaga(),
+    roomInviteSaga()
   ]);
 }

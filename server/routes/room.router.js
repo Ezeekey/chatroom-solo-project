@@ -49,7 +49,7 @@ router.get('/membership/:id', rejectUnauthenticated, async (req, res) => {
 })
 
 // Getting the name of a room and creator_id, I don't like
-router.get('/:id', rejectUnauthenticated, async (req, res) => {
+router.get('/details/:id', rejectUnauthenticated, async (req, res) => {
     try {
         // Getting name from the database using id
         const response = await pool.query('SELECT room_name, creator_id, type FROM chatroom WHERE id = $1', [req.params.id]);
@@ -66,9 +66,9 @@ router.get('/invite', rejectUnauthenticated, async (req,res) => {
     try {
         // Get list of invites for specific user from database, then send to client
         const query = 
-            'SELECT id, room_id, username, room_name FROM room_invite ' +
-            'JOIN chatroom WHERE room_id = chatroom.id ' +
-            'JOIN "user" WHERE inviter_id = "user".id ' +
+            'SELECT room_invite.id, room_id, username, room_name FROM room_invite ' +
+            'JOIN chatroom ON room_id = chatroom.id ' +
+            'JOIN "user" ON inviter_id = "user".id ' +
             'WHERE invitee_id = $1';
         const response = await pool.query(query, [req.user.id]);
         res.send(response.rows);

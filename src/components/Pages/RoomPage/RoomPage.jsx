@@ -69,7 +69,7 @@ export default function RoomPage() {
     // On first render
     useEffect(() => {
         // Getting the name of the room
-        axios.get(`/api/rooms/${param.id}`)
+        axios.get(`/api/rooms/details/${param.id}`)
             .then(response => {
                 setRoomName(response.data.room_name);
                 setCreatorId(response.data.creator_id);
