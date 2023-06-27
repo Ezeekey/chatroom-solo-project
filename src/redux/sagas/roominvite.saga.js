@@ -5,6 +5,7 @@ export default function* roomInviteSaga() {
     yield takeEvery('GET_ROOM_INVITE', getInvite);
     yield takeEvery('ACCEPT_ROOM_INVITE', acceptInvite);
     yield takeEvery('REJECT_ROOM_INVITE', rejectRequest);
+    yield takeEvery('INVITE_TO_ROOM', sendInvite);
 }
 
 
@@ -39,5 +40,15 @@ function* rejectRequest(action) {   // Expects invite_id
         yield put({type: 'GET_ROOM_INVITE'});
     } catch (error) {
         console.log('Invite rejection error!', error);
+    }
+}
+
+function* sendInvite(action) {      // Expecting {invitee_id, room_id}
+    try {
+        // Contact server to create new invite
+        yield axios.post('/api/rooms/invite', {invitee_id: action.payload.invitee_id, room_id: action.payload.room_id});
+
+    } catch (error) {
+        console.log('Invite send error', error);
     }
 }
