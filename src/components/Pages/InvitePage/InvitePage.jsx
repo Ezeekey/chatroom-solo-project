@@ -2,12 +2,14 @@ import { useDispatch, useSelector } from "react-redux"
 import { useEffect, useState } from "react"
 
 import InviteRow from "../../InviteRow/InviteRow";
+import RoomInviteRow from "../../RoomInviteRow/RoomInviteRow";
 
 import { Typography, Table, TableRow, TableCell, TableHead, TableBody, Container, Button } from "@mui/material"
 
 export default function InvitePage() {
     // Where the buddy invites are stored
     const budInvites = useSelector(store => store.budInvites);
+    const roomInvites = useSelector(store => store.roomInvites);
     // Allows for the server to be called
     const dispatch = useDispatch();
 
@@ -48,7 +50,7 @@ export default function InvitePage() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        
+                    {roomInvites.map(invite => <RoomInviteRow key={invite.id} invite={invite} />)}
                     </TableBody>
                 </Table>
             }

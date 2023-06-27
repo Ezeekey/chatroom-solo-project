@@ -25,6 +25,8 @@ function* acceptInvite(action) {    // Expects {room_id, invite_id}
         yield axios.delete(`/api/rooms/invite/${action.payload.invite_id}`);
         // Refresh the invite list
         yield put({type: 'GET_ROOM_INVITE'});
+        // Refresh the rooms list
+        yield put({type: 'GET_LOBBIES'});
     } catch (error) {
         console.log('Invitation accept error!', error);
     }
