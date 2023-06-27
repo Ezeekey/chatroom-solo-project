@@ -13,6 +13,7 @@ import Swal from "sweetalert2";
 // Component import
 import MessageBox from "../../MessageBox/MessageBox";
 import PostMessageForm from "../../PostMessageForm/PostMessageForm";
+import InviteToRoomForm from "../../InviteToRoomForm/InviteToRoomForm";
 
 // Dirty hax
 let roomId = 0;
@@ -173,6 +174,7 @@ export default function RoomPage() {
                 >
                     {membership.length > 0 ? 'End room membership' : 'Become a member'}
                 </Button>
+                <InviteToRoomForm />
                 <Box id="messageBox">
                     {messages.map(message => <MessageBox key={message.id} message={message} socket={socket} room_id={param.id} />)}
                     <div id="boxAnchor"></div>

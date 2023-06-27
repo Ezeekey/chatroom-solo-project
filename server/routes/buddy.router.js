@@ -4,10 +4,8 @@ const router = express.Router();
 
 const { rejectUnauthenticated } = require('../modules/authentication-middleware.js');
 
-// START GET
 
-// Getting list of buddies for one user
-router.get('/', rejectUnauthenticated, async (req, res) => {
+async function getBuddies(user_id) {
     try {
         // Convenient variable to hold query
         const query =
@@ -18,7 +16,7 @@ router.get('/', rejectUnauthenticated, async (req, res) => {
             'SELECT "buddy"."id", "user_id_1" AS "user_id", "accepted" FROM "user" ' +
             'JOIN "buddy" ON "user_id_2" = "user"."id" WHERE "user"."id" = $1;';
 
-        const response = await pool.query(query, [req.user.id]);
+        const response = await pool.query(query, [user_id]);
         // By here, this is a joined table consisting of just ids.
 
         // Adding names to these ids
@@ -29,9 +27,25 @@ router.get('/', rejectUnauthenticated, async (req, res) => {
         }
 
         // Send to client
-        res.send(response.rows);
+        return response.rows;
     } catch (error) {
         console.log('Get buddy error!', error);
+        return 1;
+    }
+}
+
+
+// START GET
+
+// Getting list of buddies for one user
+router.get('/', rejectUnauthenticated, async (req, res) => {
+    const rows = await getBuddies(req.user.id);
+
+    if(rows !== 1) {
+        // Success
+        res.send(rows);
+    } else {
+        // Bad
         res.sendStatus(500);
     }
 });
@@ -46,6 +60,19 @@ router.get('/invites', rejectUnauthenticated, async (req, res) => {
         res.send(response.rows);
     } catch (error) {
         console.log('Invite send error!', error);
+        res.sendStatus(500);
+    }
+});
+
+// Finding invitable buddies to a room
+router.get('/invitee', rejectUnauthenticated, async (req, res) => {
+    try {
+        // This query checks for any buddies to invite that are already not in the room
+        const query = 
+            'SELECT "user".id, username FROM ';
+    } catch (error) {
+        console.log('Getting invitable buddies error!', error);
+        res.sendStatus(500);
     }
 });
 
