@@ -56,7 +56,25 @@ router.get('/:id', rejectUnauthenticated, async (req, res) => {
         // Giving just the name to the client
         res.send(response.rows[0]);
     } catch (error) {
+        console.log('Room info get error!', error);
+        res.sendStatus(500);
+    }
+});
 
+// Getting list of invitations
+router.get('/invite', rejectUnauthenticated, async (req,res) => {
+    try {
+        // Get list of invites for specific user from database, then send to client
+        const query = 
+            'SELECT id, room_id, username, room_name FROM room_invite ' +
+            'JOIN chatroom WHERE room_id = chatroom.id ' +
+            'JOIN "user" WHERE inviter_id = "user".id ' +
+            'WHERE invitee_id = $1';
+        const response = await pool.query(query, [req.user.id]);
+        res.send(response.rows);
+    } catch (error) {
+        console.log('Invite get error!', error);
+        res.sendStatus(500);
     }
 });
 
