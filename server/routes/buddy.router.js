@@ -41,7 +41,7 @@ async function getBuddies(user_id) {
 router.get('/', rejectUnauthenticated, async (req, res) => {
     const rows = await getBuddies(req.user.id);
 
-    if(rows !== 1) {
+    if (rows !== 1) {
         // Success
         res.send(rows);
     } else {
@@ -65,11 +65,37 @@ router.get('/invites', rejectUnauthenticated, async (req, res) => {
 });
 
 // Finding invitable buddies to a room
-router.get('/invitee', rejectUnauthenticated, async (req, res) => {
+router.get('/invitee/:id', rejectUnauthenticated, async (req, res) => {
     try {
         // This query checks for any buddies to invite that are already not in the room
-        const query = 
-            'SELECT "user".id, username FROM ';
+        // First get the buddies
+        let buddies = await getBuddies(req.user.id);
+
+        // Check for errors
+        if (buddies === 1) {
+            // Something went wrong, abort!
+            res.sendStatus(500);
+            return;
+        }
+
+        // Filter down to only accepted buddies
+        buddies = buddies.filter(buddy => buddy.accepted === true);
+
+        // Final list to save to
+        const returnResult = [];
+
+        // Do a new query that returns a list of buddies who are not in your room
+        for (let buddy of buddies) {
+            const query = 
+                'SELECT * FROM room_member WHERE user_id = $1 AND room_id = $2';
+            const response = await pool.query(query, [buddy.user_id, req.params.id]);
+
+            if(response.rows.length < 1) {
+                // None existant membership, add to the final list.
+                returnResult.push(buddy);
+            }
+        }
+        res.send(returnResult);
     } catch (error) {
         console.log('Getting invitable buddies error!', error);
         res.sendStatus(500);

@@ -174,7 +174,7 @@ export default function RoomPage() {
                 >
                     {membership.length > 0 ? 'End room membership' : 'Become a member'}
                 </Button>
-                <InviteToRoomForm />
+                <InviteToRoomForm room_id={roomId} />
                 <Box id="messageBox">
                     {messages.map(message => <MessageBox key={message.id} message={message} socket={socket} room_id={param.id} />)}
                     <div id="boxAnchor"></div>
