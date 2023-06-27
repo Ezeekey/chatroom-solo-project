@@ -110,6 +110,17 @@ router.post('/membership', rejectUnauthenticated, async (req, res) => {     // E
     }
 });
 
+// Inviting other users to rooms
+router.post('/invite', rejectUnauthenticated, async (req, res) => { // Expecting {invitee_id, room_id}
+    try {
+        // Create new invite row, then send success code to client
+        await pool.query('INSERT INTO room_invite (inviter_id, invitee_id, room_id) VALUES ($1,$2,$3);', [req.user.id, req.body.invitee_id, req.body.room_id]);
+        res.sendStatus(201)
+    } catch (error) {
+        console.log('Invite send error!', error);
+    }
+});
+
 // END POST
 
 // START DELETE
@@ -142,6 +153,18 @@ router.delete('/membership/:id', rejectUnauthenticated, async (req, res) => {
         res.sendStatus(500);
     }
 });
+
+// Deleting invites
+router.delete('/invite/:id', rejectUnauthenticated, async (req, res) => { // Param is invite id
+    try {
+        // Create new invite row, then send success code to client
+        await pool.query('DELETE FROM room_invite WHERE id=$1 AND invitee_id = $2;', [req.params.id, req.user.id]);
+        res.sendStatus(204);
+    } catch (error) {
+        console.log('Invite delete error!', error);
+    }
+});
+
 
 // END DELETE
 
