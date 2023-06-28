@@ -15,7 +15,7 @@ function LandingPage() {
   return (
     <Container>
       <Paper>
-        <Typography variant="h1" align="center">Welcome to</Typography>
+        <Typography variant="h3" align="center">Welcome to</Typography>
         <img src="./images/budchatlogo_big.png" alt="Budchat"></img>
         <Typography variant="h5" align="center">Please click the login button above to continue</Typography>
       </Paper>
