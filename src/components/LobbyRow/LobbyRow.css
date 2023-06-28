@@ -1,3 +1,3 @@
-.lobbyRow:hover {
+.lobbyRow:hover, .lobbyRow:focus {
     background-color: gainsboro;
 }
