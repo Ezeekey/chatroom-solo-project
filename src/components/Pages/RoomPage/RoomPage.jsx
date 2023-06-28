@@ -15,6 +15,8 @@ import MessageBox from "../../MessageBox/MessageBox";
 import PostMessageForm from "../../PostMessageForm/PostMessageForm";
 import InviteToRoomForm from "../../InviteToRoomForm/InviteToRoomForm";
 
+let scrolls = 0;
+
 // Dirty hax
 let roomId = 0;
 let messageList = [];
@@ -45,6 +47,9 @@ socket.on('MESSAGE_SUCCESS', e => {
 // END websocket
 
 export default function RoomPage() {
+    // Allows thing to focus
+    let anchor = null;
+
     // This will allow for the room id to be gotten
     const param = useParams();
     roomId = param.id;
@@ -90,14 +95,34 @@ export default function RoomPage() {
         document.addEventListener('message_got', e => {
             setMessages(messageList);
         });
+        scrolls = 0;
     }, []);
+
+
+    useEffect(() => {
+        scrollToBottom();
+        console.log('Use effect fired');
+    }, [messages]);
+
+
+    function scrollToBottom() {
+        console.log('Fired');
+        // Only scrolls to bottom on first get
+        if (scrolls > 0) {
+            return;
+        }
+
+        // Scroll chat box to bottom
+        anchor.focus();
+        scrolls++;
+    }
 
 
     async function getMembership() {
         try {
             // Contact server
             const response = await axios.get(`/api/rooms/membership/${param.id}`);
-            if(response.data.length === 0 && roomType !== 'public' && roomType !== '' && user.privilege < 2) {
+            if (response.data.length === 0 && roomType !== 'public' && roomType !== '' && user.privilege < 2) {
                 // User is not a member and is in a private room
                 history.push('/lobby');
             }
@@ -144,7 +169,7 @@ export default function RoomPage() {
     async function addMembership() {
         try {
             // Sending data to server, and waiting for it to come back
-            await axios.post('/api/rooms/membership', {room_id: param.id});
+            await axios.post('/api/rooms/membership', { room_id: param.id });
         } catch (error) {
             console.log('Membership addition error!', error);
         }
@@ -176,8 +201,8 @@ export default function RoomPage() {
                 </Button>
                 <InviteToRoomForm room_id={roomId} />
                 <Box id="messageBox">
+                    <div id="boxAnchor" tabIndex={-1} ref={e => anchor = e}></div>
                     {messages.map(message => <MessageBox key={message.id} message={message} socket={socket} room_id={param.id} />)}
-                    <div id="boxAnchor"></div>
                 </Box>
                 <PostMessageForm socket={socket} />
             </Paper>

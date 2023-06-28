@@ -78,8 +78,6 @@ io.on('connection', socket => {
         'ORDER BY "time_posted" DESC LIMIT 50;';
 
       const response = await pool.query(query, [room]);
-      // The response has to be reversed here as a workaround for unwanted behavior from SQL
-      response.rows.reverse();
 
       // Send back to client
       socket.emit('GIVE_MESSAGES', response.rows);
