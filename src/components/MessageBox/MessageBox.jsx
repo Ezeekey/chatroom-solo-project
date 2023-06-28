@@ -5,6 +5,7 @@ import ProfileWidget from "../ProfileWidget/ProfileWidget";
 
 import { Container, Typography, Paper, Button, Modal, Box, TextField } from "@mui/material";
 import Swal from "sweetalert2";
+import moment from "moment/moment";
 
 export default function MessageBox({ message, socket, room_id }) {
     // Modal input states
@@ -62,7 +63,7 @@ export default function MessageBox({ message, socket, room_id }) {
                 <Container>
                     <Typography variant="h6" onClick={openInfo}>{message.username}</Typography>
                     <Typography variant="body1">{message.content}</Typography>
-                    <Typography variant="caption">{message.time_posted}</Typography>
+                    <Typography variant="caption">{moment(message.time_posted).format('MMMM Do YYYY, h:mm:ss a')}</Typography>
                 </Container>
                 {message.user_id === user.id && !message.marked_for_delete && <Button variant="outlined" color="warning" onClick={() => { setModalOpen(true); setNewContent(message.content) }}>Edit</Button>}
                 {user.privilege > 0 && <Button variant="outlined" color="error" onClick={deleteMessage}>delete</Button>}
