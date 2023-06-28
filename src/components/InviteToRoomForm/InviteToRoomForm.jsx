@@ -39,7 +39,7 @@ export default function InviteToRoomForm({ room_id }) {
             >
                 <Container>
                     <Paper>
-                        <Typography variant="h1">Argh</Typography>
+                        <Typography variant="h4">Invite to room</Typography>
                         <Table>
                             <TableHead>
                                 <TableRow>

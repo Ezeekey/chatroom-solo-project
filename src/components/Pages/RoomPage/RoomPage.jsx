@@ -188,6 +188,7 @@ export default function RoomPage() {
         <Container>
             <Paper>
                 <Typography variant="h3"> {roomName} </Typography>
+                <Typography variant="h6">You are: {user.username}</Typography>
                 {
                     (user.privilege > 0 || user.id === creatorId) &&
                     <Button variant="outlined" color="error" onClick={deleteRoom}>Delete room</Button>
