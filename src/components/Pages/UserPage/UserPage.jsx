@@ -4,7 +4,7 @@ import { useState } from 'react';
 import LogOutButton from '../../Shared/LogOutButton/LogOutButton';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { Container, Typography, TextField, Button } from '@mui/material';
+import { Container, Typography, TextField, Button, Paper, Box } from '@mui/material';
 
 function UserPage() {
   // this component doesn't do much to start, just renders some user reducer info to the DOM
@@ -19,7 +19,7 @@ function UserPage() {
 
   function submitNewStatus() {
     // Call the server with new status
-    dispatch({ type: 'SET_STATUS', payload: newStatus});
+    dispatch({ type: 'SET_STATUS', payload: newStatus });
     // Clear the input, and reset the mode to view new status
     setNewStatus('');
     setEditStatusMode(false);
@@ -27,20 +27,24 @@ function UserPage() {
 
   return (
     <Container>
-      <Typography variant="h2">Welcome, {user.username}!</Typography>
-      {
-        editStatusMode ?
-          <Container>
-            <TextField label="New status" value={newStatus} onChange={e => setNewStatus(e.target.value)} fullWidth></TextField>
-            <Button variant="outlined" onClick={submitNewStatus}>Edit status</Button>
-          </Container> :
-          <Container>
-            <Typography variant="body1">Current status: {user.status}</Typography>
-            <Button variant="outlined" onClick={() => setEditStatusMode(true)}>Edit status</Button>
-          </Container>
-      }
-      <LogOutButton className="btn" />
-    </Container>
+      <Paper>
+        <Typography variant="h2">Welcome, {user.username}!</Typography>
+        <Container>
+          {
+            editStatusMode ?
+              <Box>
+                <TextField label="New status" value={newStatus} onChange={e => setNewStatus(e.target.value)} fullWidth></TextField>
+                <Button variant="outlined" onClick={submitNewStatus}>Edit status</Button>
+              </Box> :
+              <Box>
+                <Typography variant="body1">Current status: {user.status}</Typography>
+                <Button variant="outlined" onClick={() => setEditStatusMode(true)}>Edit status</Button>
+              </Box>
+          }
+          <LogOutButton className="btn" />
+        </Container>
+      </Paper>
+    </Container >
   );
 }
 

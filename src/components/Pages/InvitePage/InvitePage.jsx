@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import InviteRow from "../../InviteRow/InviteRow";
 import RoomInviteRow from "../../RoomInviteRow/RoomInviteRow";
 
-import { Typography, Table, TableRow, TableCell, TableHead, TableBody, Container, Button } from "@mui/material"
+import { Typography, Table, TableRow, TableCell, TableHead, TableBody, Container, Button, Paper } from "@mui/material"
 
 export default function InvitePage() {
     // Where the buddy invites are stored
@@ -24,36 +24,38 @@ export default function InvitePage() {
 
     return (
         <Container>
-            <Typography variant="h3" align="center">Invites</Typography>
-            <Button variant="outlined" onClick={() => setWhichTable(!whichTable)}>Buddy requests</Button>
-            {
-                whichTable ?
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell><Typography variant="h6">Username</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Accept?</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Delete?</Typography></TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {budInvites.map(invite => <InviteRow key={invite.id} invite={invite} />)}
-                    </TableBody>
-                </Table> :
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell><Typography variant="subtitle2">Inviter</Typography></TableCell>
-                            <TableCell><Typography variant="subtitle2">Room name</Typography></TableCell>
-                            <TableCell><Typography variant="subtitle2">Accept?</Typography></TableCell>
-                            <TableCell><Typography variant="subtitle2">Delete?</Typography></TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                    {roomInvites.map(invite => <RoomInviteRow key={invite.id} invite={invite} />)}
-                    </TableBody>
-                </Table>
-            }
+            <Paper>
+                <Typography variant="h3" align="center">Invites</Typography>
+                <Button variant="outlined" onClick={() => setWhichTable(!whichTable)}>Buddy requests</Button>
+                {
+                    whichTable ?
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell><Typography variant="h6">Username</Typography></TableCell>
+                                    <TableCell><Typography variant="h6">Accept?</Typography></TableCell>
+                                    <TableCell><Typography variant="h6">Delete?</Typography></TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {budInvites.map(invite => <InviteRow key={invite.id} invite={invite} />)}
+                            </TableBody>
+                        </Table> :
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell><Typography variant="subtitle2">Inviter</Typography></TableCell>
+                                    <TableCell><Typography variant="subtitle2">Room name</Typography></TableCell>
+                                    <TableCell><Typography variant="subtitle2">Accept?</Typography></TableCell>
+                                    <TableCell><Typography variant="subtitle2">Delete?</Typography></TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {roomInvites.map(invite => <RoomInviteRow key={invite.id} invite={invite} />)}
+                            </TableBody>
+                        </Table>
+                }
+            </Paper>
         </Container>
     )
 }

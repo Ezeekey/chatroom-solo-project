@@ -32,7 +32,7 @@ export default function InviteToRoomForm({ room_id }) {
 
     return (
         <>
-            <Button variant="outlined" onClick={() => setModalOpen(true)}>Invite to room</Button>
+            <Button variant="outlined" onClick={() => setModalOpen(true)} color="secondary">Invite to room</Button>
             <Modal
                 open={modalOpen}
                 onClose={() => setModalOpen(false)}

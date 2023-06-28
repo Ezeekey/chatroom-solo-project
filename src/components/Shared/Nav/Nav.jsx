@@ -4,6 +4,8 @@ import LogOutButton from '../LogOutButton/LogOutButton';
 import './Nav.css';
 import { useSelector } from 'react-redux';
 
+import { Button, Box } from '@mui/material';
+
 function Nav() {
   const user = useSelector((store) => store.user);
 
@@ -12,7 +14,7 @@ function Nav() {
       <Link to="/home">
         <h2 className="nav-title">Prime Solo Project</h2>
       </Link>
-      <div>
+      <Box alignSelf="right" className="navButton">
         {/* If no user is logged in, show these links */}
         {!user.id && (
           // If there's no user, show login/registration links
@@ -24,34 +26,34 @@ function Nav() {
         {/* If a user is logged in, show these links */}
         {user.id && (
           <>
-            <Link className="navLink" to="/user">
-              Home
+            <Link to="/user">
+              <Button variant="outlined">Home</Button>
             </Link>
 
-            <Link className="navLink" to="/info">
-              Info Page
+            <Link to="/info">
+              <Button variant="outlined">Info</Button>
             </Link>
 
-            <Link className="navLink" to="/lobby">
-              Lobbies
+            <Link to="/lobby">
+              <Button variant="outlined">Lobby</Button>
             </Link>
 
-            <Link className="navLink" to="/buddy">
-              Buddies
+            <Link to="/buddy">
+              <Button variant="outlined">Buddies</Button>
             </Link>
 
-            <Link className="navLink" to="/invite">
-              Invites
+            <Link to="/invite">
+              <Button variant="outlined">Invites</Button>
             </Link>
 
             <LogOutButton className="navLink" />
           </>
         )}
 
-        <Link className="navLink" to="/about">
-          About
+        <Link to="/about">
+          <Button variant="outlined">About</Button>
         </Link>
-      </div>
+      </Box>
     </div>
   );
 }

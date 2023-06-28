@@ -4,8 +4,10 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom"
 import { useEffect } from "react"
 
 // Styling imports
-import { Table, TableContainer, TableHead, TableBody, TableCell, Typography, Container, TableRow
-        , Button } from "@mui/material"
+import {
+    Table, TableContainer, TableHead, TableBody, TableCell, Typography, Container, TableRow
+    , Button, Paper
+} from "@mui/material"
 
 // Component imports
 import LobbyRow from "../../LobbyRow/LobbyRow"
@@ -22,28 +24,30 @@ export default function LobbyPage() {
 
     return (
         <Container>
-            <Typography variant="h3" align="center">Lobbies</Typography>
-            <Button variant="contained" onClick={goToCreatePage}>Create room</Button>
-            <TableContainer>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>
-                                <Typography variant="h6">Lobby name</Typography>
-                            </TableCell>
-                            <TableCell>
-                                <Typography variant="h6">Started by:</Typography>
-                            </TableCell>
-                            <TableCell>
-                                <Typography variant="h6">Lobby visibility</Typography>
-                            </TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {lobbies.map(lobby => <LobbyRow key={lobby.id} lobby={lobby} />)}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+            <Paper>
+                <Typography variant="h3" align="center">Lobbies</Typography>
+                <Button variant="contained" onClick={goToCreatePage}>Create room</Button>
+                <TableContainer>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>
+                                    <Typography variant="h6">Lobby name</Typography>
+                                </TableCell>
+                                <TableCell>
+                                    <Typography variant="h6">Started by:</Typography>
+                                </TableCell>
+                                <TableCell>
+                                    <Typography variant="h6">Lobby visibility</Typography>
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {lobbies.map(lobby => <LobbyRow key={lobby.id} lobby={lobby} />)}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Paper>
         </Container>
     )
 }
