@@ -17,8 +17,8 @@ export default function BuddyRow({ buddy }) {
     }
 
     return (
-        <>
-            <TableRow onClick={openProfile} className="lobbyRow">
+        <>          
+            <TableRow onClick={openProfile} className="lobbyRow" tabindex={0} onKeyDown={e => {if (e.key === 'Enter'){openProfile()} }}>
                 <TableCell>
                     <Typography>N/A</Typography>
                 </TableCell>

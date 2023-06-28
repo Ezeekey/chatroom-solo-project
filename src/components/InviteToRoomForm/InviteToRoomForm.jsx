@@ -60,6 +60,7 @@ export default function InviteToRoomForm({ room_id }) {
                                 )}
                             </TableBody>
                         </Table>
+                        <Button variant="outlined" onClick={() => setModalOpen(false)}>Close</Button>
                     </Paper>
                 </Container>
             </Modal>
