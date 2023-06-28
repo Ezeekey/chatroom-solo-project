@@ -36,6 +36,7 @@ export default function NewRoomPage() {
                 <TextField value={roomName} onChange={e => setRoomName(e.target.value)} label="Room name" />
                 <Select value={roomType} onChange={e => setRoomType(e.target.value)}>
                     <MenuItem value="public">Public</MenuItem>
+                    <MenuItem value="private">Private</MenuItem>
                 </Select>
                 <Container align="center">
                     <Button variant="contained" color="success" onClick={createRoom}>Create</Button>
