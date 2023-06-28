@@ -1,6 +1,8 @@
 import { useDispatch } from "react-redux";
 
-import { TableCell, TableRow, Typography, Button } from "@mui/material"
+import { TableCell, TableRow, Typography, Button, Icon } from "@mui/material"
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 
 export default function RoomInviteRow({ invite }) {
     // Used to contact the server
@@ -18,16 +20,13 @@ export default function RoomInviteRow({ invite }) {
     return (
         <TableRow>
             <TableCell>
-                <Typography variant="body1">{invite.username}</Typography>
+                <Typography variant="body2">{invite.username + '\nInvites you to\n\n' + invite.room_name}</Typography>
             </TableCell>
             <TableCell>
-                <Typography variant="body1">{invite.room_name}</Typography>
+                <Button variant="contained" color="success" onClick={accept}><ThumbUpIcon /></Button>               
             </TableCell>
             <TableCell>
-                <Button variant="contained" color="success" onClick={accept}>Accept</Button>               
-            </TableCell>
-            <TableCell>
-                <Button variant="outlined" color="error" onClick={decline}>Decline</Button>
+                <Button variant="outlined" color="error" onClick={decline}><DeleteOutlineOutlinedIcon /></Button>
             </TableCell>
         </TableRow>
     )

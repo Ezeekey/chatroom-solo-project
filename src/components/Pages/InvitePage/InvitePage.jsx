@@ -46,8 +46,7 @@ export default function InvitePage() {
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell><Typography variant="subtitle2">Inviter</Typography></TableCell>
-                                    <TableCell><Typography variant="subtitle2">Room name</Typography></TableCell>
+                                    <TableCell><Typography variant="subtitle2">Invite</Typography></TableCell>
                                     <TableCell><Typography variant="subtitle2">Accept?</Typography></TableCell>
                                     <TableCell><Typography variant="subtitle2">Delete?</Typography></TableCell>
                                 </TableRow>
