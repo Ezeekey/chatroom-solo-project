@@ -21,8 +21,8 @@ export default function InviteToRoomForm({ room_id }) {
         }
     }
 
-    function sendInvite(user) {
-        dispatch({ type: 'INVITE_TO_ROOM', payload: { room_id, invitee_id: user } });
+    async function sendInvite(user) {
+        await dispatch({ type: 'INVITE_TO_ROOM', payload: { room_id, invitee_id: user } });
         getInvitees();
     }
 

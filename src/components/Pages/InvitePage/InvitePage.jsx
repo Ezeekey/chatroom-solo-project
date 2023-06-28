@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import InviteRow from "../../InviteRow/InviteRow";
 import RoomInviteRow from "../../RoomInviteRow/RoomInviteRow";
 
-import { Typography, Table, TableRow, TableCell, TableHead, TableBody, Container, Button, Paper } from "@mui/material"
+import { Typography, Table, TableRow, TableCell, TableHead, TableBody, Container, Button, Paper, Box } from "@mui/material"
 
 export default function InvitePage() {
     // Where the buddy invites are stored
@@ -26,7 +26,9 @@ export default function InvitePage() {
         <Container>
             <Paper>
                 <Typography variant="h3" align="center">Invites</Typography>
-                <Button variant="outlined" onClick={() => setWhichTable(!whichTable)}>Buddy requests</Button>
+                <Box align="center">
+                    <Button variant="outlined" onClick={() => setWhichTable(!whichTable)}>{whichTable ? "Buddy requests" : "Room invites"}</Button>
+                </Box>
                 {
                     whichTable ?
                         <Table>

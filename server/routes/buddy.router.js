@@ -89,8 +89,11 @@ router.get('/invitee/:id', rejectUnauthenticated, async (req, res) => {
             const query = 
                 'SELECT * FROM room_member WHERE user_id = $1 AND room_id = $2';
             const response = await pool.query(query, [buddy.user_id, req.params.id]);
-
-            if(response.rows.length < 1) {
+            // And those who aren't already invited
+            const otherQuery = 
+                'SELECT * FROM room_invite WHERE invitee_id = $1 AND room_id = $2';
+            const otherResponse = await pool.query(otherQuery, [buddy.user_id, req.params.id]);
+            if(response.rows.length < 1 && otherResponse.rows.length < 1) {
                 // None existant membership, add to the final list.
                 returnResult.push(buddy);
             }
