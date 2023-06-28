@@ -11,8 +11,8 @@ function Nav() {
 
   return (
     <div className="nav">
-      <Link to="/home">
-        <h2 className="nav-title">Prime Solo Project</h2>
+      <Link to="/home" id="logo">
+        <img src="./images/budchatlogo_small.png" />
       </Link>
       <Box alignSelf="right" className="navButton">
         {/* If no user is logged in, show these links */}
@@ -28,10 +28,6 @@ function Nav() {
           <>
             <Link to="/user">
               <Button variant="outlined">Home</Button>
-            </Link>
-
-            <Link to="/info">
-              <Button variant="outlined">Info</Button>
             </Link>
 
             <Link to="/lobby">

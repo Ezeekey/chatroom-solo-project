@@ -43,4 +43,13 @@
 
 .navButton {
   background-color: white;
+  max-width: 75%;
+}
+
+#logo{
+  height: 10vh;
+}
+
+#logo img{
+  height: 100%;
 }
