@@ -75,6 +75,7 @@ router.get('/invitee/:id', rejectUnauthenticated, async (req, res) => {
         if (buddies === 1) {
             // Something went wrong, abort!
             res.sendStatus(500);
+            console.log('Oh crap!');
             return;
         }
 

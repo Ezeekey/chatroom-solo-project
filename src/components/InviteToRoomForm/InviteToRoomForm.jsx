@@ -22,9 +22,17 @@ export default function InviteToRoomForm({ room_id }) {
     }
 
     async function sendInvite(user) {
-        await dispatch({ type: 'INVITE_TO_ROOM', payload: { room_id, invitee_id: user } });
-        getInvitees();
+        // await dispatch({ type: 'INVITE_TO_ROOM', payload: { room_id, invitee_id: user } });
+
+        try {
+            // Contact server to create new invite
+            await axios.post('/api/rooms/invite', { invitee_id: user, room_id });
+            getInvitees();
+        } catch (error) {
+            console.log('Invite send error', error);
+        }
     }
+
 
     useEffect(() => {
         getInvitees();
@@ -48,7 +56,7 @@ export default function InviteToRoomForm({ room_id }) {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {inviteeList.map(buddy => 
+                                {inviteeList.map(buddy =>
                                     <TableRow key={buddy.user_id}>
                                         <TableCell>
                                             <Typography variant="body1">{buddy.username}</Typography>
@@ -66,4 +74,4 @@ export default function InviteToRoomForm({ room_id }) {
             </Modal>
         </>
     )
-}
+}    
