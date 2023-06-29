@@ -3,6 +3,9 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 
 const app = express();
+// Cookies and authentication
+const sessionMiddleware = require('./modules/session-middleware');
+const passport = require('./strategies/user.strategy');
 
 // Starting an httpServer const so that socket.io can work
 const httpServer = require('http').createServer(app);
@@ -10,9 +13,6 @@ const httpServer = require('http').createServer(app);
 // Importing pool so sockets can make queries to database
 const pool = require('./modules/pool.js');
 
-// Cookies and authentication
-const sessionMiddleware = require('./modules/session-middleware');
-const passport = require('./strategies/user.strategy');
 
 // Actually starting socket.io
 const io = require('socket.io')(httpServer, {});
