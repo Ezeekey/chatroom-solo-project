@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom/cjs/react-router-dom";
 
 import { Button, TextField, Container } from "@mui/material"
+import SendIcon from '@mui/icons-material/Send';
 
 export default function PostMessageForm({socket}) {
     const [input, setInput] = useState('');
@@ -22,7 +23,7 @@ export default function PostMessageForm({socket}) {
     return (
         <Container>
             <TextField fullWidth multiline minRows={2} value={input} onChange={e => setInput(e.target.value)} />
-            <Button variant="contained" onClick={submit}>Post</Button>
+            <Button variant="contained" onClick={submit}>Post <SendIcon /></Button>
         </Container>
     )
 }

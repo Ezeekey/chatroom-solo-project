@@ -9,6 +9,8 @@ import axios from "axios";
 import { Typography, Container, Paper, Box, Button } from "@mui/material";
 import './RoomPage.css';
 import Swal from "sweetalert2";
+import DeleteIcon from '@mui/icons-material/Delete';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 // Component import
 import MessageBox from "../../MessageBox/MessageBox";
@@ -191,14 +193,14 @@ export default function RoomPage() {
                 <Typography variant="h6">You are: {user.username}</Typography>
                 {
                     (user.privilege > 0 || user.id === creatorId) &&
-                    <Button variant="outlined" color="error" onClick={deleteRoom}>Delete room</Button>
+                    <Button variant="outlined" color="error" onClick={deleteRoom}>Delete room <DeleteIcon/></Button>
                 }
                 <Button
                     variant="outlined"
                     color={membership.length > 0 ? 'warning' : 'primary'}
                     onClick={handleMemberButton}
                 >
-                    {membership.length > 0 ? 'End room membership' : 'Become a member'}
+                    {membership.length > 0 ? <>End room membership<CancelIcon/></> : 'Become a member'}
                 </Button>
                 <InviteToRoomForm room_id={roomId} />
                 <Box id="messageBox">

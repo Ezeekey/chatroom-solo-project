@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux"
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 
 import { Container, Paper, TextField, Button, Select, MenuItem, Typography } from "@mui/material"
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 
 export default function NewRoomPage() {
     // Form variables
@@ -39,7 +40,7 @@ export default function NewRoomPage() {
                     <MenuItem value="private">Private</MenuItem>
                 </Select>
                 <Container align="center">
-                    <Button variant="contained" color="success" onClick={createRoom}>Create</Button>
+                    <Button variant="contained" color="success" onClick={createRoom}>Create<ArrowUpwardIcon/></Button>
                     <Button variant="outlined" onClick={goBack}>Cancel</Button>
                 </Container>
             </Paper>

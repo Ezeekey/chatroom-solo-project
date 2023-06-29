@@ -1,6 +1,8 @@
 import { useSelector, useDispatch } from 'react-redux';
 
 import { Modal, Typography, Paper, Container, Button } from '@mui/material';
+import CancelIcon from '@mui/icons-material/Cancel';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import Swal from 'sweetalert2';
 
 export default function ProfileWidget({ open, close }) {
@@ -58,8 +60,8 @@ export default function ProfileWidget({ open, close }) {
                             }
                             {
                                 selectedUser.isBuddy ?
-                                    <Button variant="contained" color="error" onClick={removeBuddy}>Remove buddy</Button> :
-                                    <Button variant="contained" color="success" disabled={selectedUser.requestSent} onClick={addBuddyRequest} >Add buddy</Button>
+                                    <Button variant="contained" color="error" onClick={removeBuddy}>Remove buddy<CancelIcon/></Button> :
+                                    <Button variant="contained" color="success" disabled={selectedUser.requestSent} onClick={addBuddyRequest} >Add buddy<PersonAddIcon/></Button>
                             }
                         </> : <Typography variant="h5">You</Typography>
                     }

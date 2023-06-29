@@ -1,6 +1,8 @@
 import { useDispatch } from "react-redux"
 
 import { TableRow, TableCell, Typography, Button } from "@mui/material"
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function InviteRow({ invite }) {
     // Used to contact server
@@ -20,10 +22,10 @@ export default function InviteRow({ invite }) {
                 <Typography variant="body1">{invite.username}</Typography>
             </TableCell>
             <TableCell>
-                <Button variant="contained" color="success" onClick={acceptRequest}>Accept</Button>
+                <Button variant="contained" color="success" onClick={acceptRequest}><PersonAddIcon/></Button>
             </TableCell>
             <TableCell>
-                <Button variant="outlined" color="error" onClick={deleteRequest}>Delete</Button>
+                <Button variant="outlined" color="error" onClick={deleteRequest}><DeleteIcon/></Button>
             </TableCell>
         </TableRow>
     )

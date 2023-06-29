@@ -5,6 +5,7 @@ import LogOutButton from '../../Shared/LogOutButton/LogOutButton';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { Container, Typography, TextField, Button, Paper, Box } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 
 function UserPage() {
   // this component doesn't do much to start, just renders some user reducer info to the DOM
@@ -34,11 +35,11 @@ function UserPage() {
             editStatusMode ?
               <Box>
                 <TextField label="New status" value={newStatus} onChange={e => setNewStatus(e.target.value)} fullWidth></TextField>
-                <Button variant="outlined" onClick={submitNewStatus}>Edit status</Button>
+                <Button variant="outlined" onClick={submitNewStatus}>Edit status<EditIcon/></Button>
               </Box> :
               <Box>
                 <Typography variant="body1">Current status: {user.status}</Typography>
-                <Button variant="outlined" onClick={() => setEditStatusMode(true)}>Edit status</Button>
+                <Button variant="outlined" onClick={() => setEditStatusMode(true)}>Edit status<EditIcon/></Button>
               </Box>
           }
           <LogOutButton className="btn" />

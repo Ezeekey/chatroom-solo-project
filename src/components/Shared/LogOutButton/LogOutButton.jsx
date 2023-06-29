@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom';
 
 import { Button } from '@mui/material';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 function LogOutButton(props) {
   const history = useHistory();
@@ -20,7 +21,7 @@ function LogOutButton(props) {
         history.push('/home');
       }}
     >
-      Log Out
+      Log Out<LogoutIcon/>
     </Button>
   );
 }

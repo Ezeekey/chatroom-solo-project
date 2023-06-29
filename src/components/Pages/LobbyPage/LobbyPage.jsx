@@ -8,6 +8,7 @@ import {
     Table, TableContainer, TableHead, TableBody, TableCell, Typography, Container, TableRow
     , Button, Paper
 } from "@mui/material"
+import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 
 // Component imports
 import LobbyRow from "../../LobbyRow/LobbyRow"
@@ -26,7 +27,7 @@ export default function LobbyPage() {
         <Container>
             <Paper>
                 <Typography variant="h3" align="center">Lobbies</Typography>
-                <Button variant="contained" onClick={goToCreatePage}>Create room</Button>
+                <Button variant="contained" onClick={goToCreatePage}>Create room<LibraryAddIcon/></Button>
                 <TableContainer>
                     <Table>
                         <TableHead>
