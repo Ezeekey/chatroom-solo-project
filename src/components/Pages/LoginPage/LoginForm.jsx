@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
+
+import { Typography, TextField, Container, Button, Box } from '@mui/material';
 
 function LoginForm() {
   const [username, setUsername] = useState('');
@@ -25,41 +27,21 @@ function LoginForm() {
   }; // end login
 
   return (
-    <form className="formPanel" onSubmit={login}>
-      <h2>Login</h2>
+    <Container>
+      <Typography variant="h3" align="center">Log in</Typography>
       {errors.loginMessage && (
         <h3 className="alert" role="alert">
           {errors.loginMessage}
         </h3>
       )}
-      <div>
-        <label htmlFor="username">
-          Username:
-          <input
-            type="text"
-            name="username"
-            required
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
-          />
-        </label>
-      </div>
-      <div>
-        <label htmlFor="password">
-          Password:
-          <input
-            type="password"
-            name="password"
-            required
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          />
-        </label>
-      </div>
-      <div>
-        <input className="btn" type="submit" name="submit" value="Log In" />
-      </div>
-    </form>
+      <Box align="center">
+        <TextField label="User name" onChange={e => setUsername(e.target.value)} value={username} />
+        <TextField label="Password" onChange={e => setPassword(e.target.value)} value={password} type="password" />
+      </Box>
+      <Box align="center">
+        <Button variant="contained" color="secondary" onClick={login}>Log in</Button>
+      </Box>
+    </Container>
   );
 }
 
