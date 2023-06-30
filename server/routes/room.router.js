@@ -118,7 +118,7 @@ router.post('/membership', rejectUnauthenticated, async (req, res) => {     // E
         }
 
         // Checking if user is invited, to prevent random users from joining rooms they are not supposed to
-        const inviteResponse = await pool.query('SELECT * FROM room_invite WHERE invitee_id = $1 AND room_id = $2');
+        const inviteResponse = await pool.query('SELECT * FROM room_invite WHERE invitee_id = $1 AND room_id = $2', [req.user.id, req.body.room_id]);
 
         if (inviteResponse.rows.length < 1) {
             // Not invited, quit
@@ -140,6 +140,15 @@ router.post('/membership', rejectUnauthenticated, async (req, res) => {     // E
 // Inviting other users to rooms
 router.post('/invite', rejectUnauthenticated, async (req, res) => { // Expecting {invitee_id, room_id}
     try {
+        // First check if the inviter is already a member of the room and not super admin
+        const checkResponse = await pool.query('SELECT * FROM room_member WHERE user_id = $1 AND room_id = $2;', [req.user.id, req.body.room_id]);
+
+        if (checkResponse.rows.length < 1 && req.user.privilege < 2){
+            // Not super admin nor a member, quit
+            res.sendStatus(400);
+            return;
+        }
+
         // Create new invite row, then send success code to client
         await pool.query('INSERT INTO room_invite (inviter_id, invitee_id, room_id) VALUES ($1,$2,$3);', [req.user.id, req.body.invitee_id, req.body.room_id]);
         res.sendStatus(201)
