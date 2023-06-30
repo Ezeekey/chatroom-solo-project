@@ -12,7 +12,7 @@ router.get('/', rejectUnauthenticated, async (req, res) => {
         // Convenient variable for longish query
         const query =
             'SELECT "chatroom"."id", "room_name", "username", "type" FROM "chatroom" ' +
-            'JOIN "user" ON "user"."id" = "creator_id" ' + 
+            'JOIN "user" ON "user"."id" = "creator_id" ' +
             'WHERE type=\'public\' ' +
             'UNION ALL ' +
             'SELECT DISTINCT chatroom.id, room_name, username, type FROM chatroom JOIN "user" ON "user".id = creator_id ' +
@@ -62,10 +62,10 @@ router.get('/details/:id', rejectUnauthenticated, async (req, res) => {
 });
 
 // Getting list of invitations
-router.get('/invite', rejectUnauthenticated, async (req,res) => {
+router.get('/invite', rejectUnauthenticated, async (req, res) => {
     try {
         // Get list of invites for specific user from database, then send to client
-        const query = 
+        const query =
             'SELECT room_invite.id, room_id, username, room_name FROM room_invite ' +
             'JOIN chatroom ON room_id = chatroom.id ' +
             'JOIN "user" ON inviter_id = "user".id ' +
@@ -111,8 +111,17 @@ router.post('/membership', rejectUnauthenticated, async (req, res) => {     // E
         // Checking that user is already a member first, then checking if the function should go forward
         const existanceResponse = await pool.query('SELECT * FROM room_member WHERE user_id = $1 AND room_id = $2', [req.user.id, req.body.room_id]);
 
-        if (existanceResponse.rows > 0) {
+        if (existanceResponse.rows.length > 0) {
             // Membership already exists. Quit
+            res.sendStatus(400);
+            return;
+        }
+
+        // Checking if user is invited, to prevent random users from joining rooms they are not supposed to
+        const inviteResponse = await pool.query('SELECT * FROM room_invite WHERE invitee_id = $1 AND room_id = $2');
+
+        if (inviteResponse.rows.length < 1) {
+            // Not invited, quit
             res.sendStatus(400);
             return;
         }
