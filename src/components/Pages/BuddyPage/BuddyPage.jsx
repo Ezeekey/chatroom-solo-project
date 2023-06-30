@@ -22,9 +22,9 @@ export default function BuddyPage() {
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>
+                            {/* <TableCell>
                                 <Typography variant="h6">Avatar</Typography>
-                            </TableCell>
+                            </TableCell> */}
                             <TableCell>
                                 <Typography variant="h6">Name</Typography>
                             </TableCell>

@@ -19,9 +19,9 @@ export default function BuddyRow({ buddy }) {
     return (
         <>          
             <TableRow onClick={openProfile} className="lobbyRow" tabindex={0} onKeyDown={e => {if (e.key === 'Enter'){openProfile()} }}>
-                <TableCell>
+                {/* <TableCell>
                     <Typography>N/A</Typography>
-                </TableCell>
+                </TableCell> */}
                 <TableCell>
                     <Typography>{buddy.username}</Typography>
                 </TableCell>
