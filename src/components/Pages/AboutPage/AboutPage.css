@@ -1,0 +1,11 @@
+.picLink {
+    margin: 20px;
+    
+    display: inline-block;
+}
+
+.darkCircle {
+    background-color: darkgreen;
+
+    border-radius: 20px;
+}

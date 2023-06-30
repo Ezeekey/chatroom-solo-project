@@ -12,7 +12,7 @@ export default function LobbyRow({ lobby }) {
     }
 
     return (
-        <TableRow tabindex={0} onClick={goToRoom} className="lobbyRow" onKeyDown={e => {if (e.key === 'Enter'){goToRoom()} }}>
+        <TableRow tabIndex={0} onClick={goToRoom} className="lobbyRow" onKeyDown={e => {if (e.key === 'Enter'){goToRoom()} }}>
             <TableCell>
                 <Typography>{lobby.room_name}</Typography>
             </TableCell>
