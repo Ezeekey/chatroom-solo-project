@@ -1,6 +1,6 @@
 import { useHistory } from "react-router-dom/cjs/react-router-dom"
 
-import { TableRow, TableCell, BUtton, Typography, Button } from "@mui/material"
+import { TableRow, TableCell, Typography } from "@mui/material"
 import "./LobbyRow.css";
 
 export default function LobbyRow({ lobby }) {

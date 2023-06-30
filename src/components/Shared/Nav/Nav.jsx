@@ -42,7 +42,7 @@ function Nav() {
               <Button variant="outlined">Invites</Button>
             </Link>
 
-            <LogOutButton className="navLink" />
+            <LogOutButton />
           </>
         )}
 
