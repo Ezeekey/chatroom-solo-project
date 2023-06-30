@@ -155,28 +155,10 @@ export default function RoomPage() {
 
 
     async function handleMemberButton() {
-        if (membership.length > 0) {
-            // Ending membership
-            await removeMembership();
-        } else {
-            // Joining membership
-            await addMembership();
-        }
-
+        await removeMembership();
         // Refresh the data
         getMembership();
     }
-
-
-    async function addMembership() {
-        try {
-            // Sending data to server, and waiting for it to come back
-            await axios.post('/api/rooms/membership', { room_id: param.id });
-        } catch (error) {
-            console.log('Membership addition error!', error);
-        }
-    }
-
 
     async function removeMembership() {
         try {
@@ -193,16 +175,21 @@ export default function RoomPage() {
                 <Typography variant="h6">You are: {user.username}</Typography>
                 {
                     (user.privilege > 0 || user.id === creatorId) &&
-                    <Button variant="outlined" color="error" onClick={deleteRoom}>Delete room <DeleteIcon/></Button>
+                    <Button variant="outlined" color="error" onClick={deleteRoom}>Delete room <DeleteIcon /></Button>
                 }
-                <Button
-                    variant="outlined"
-                    color={membership.length > 0 ? 'warning' : 'primary'}
-                    onClick={handleMemberButton}
-                >
-                    {membership.length > 0 ? <>End room membership<CancelIcon/></> : 'Become a member'}
-                </Button>
-                <InviteToRoomForm room_id={roomId} />
+                {membership.length > 0 &&
+                    <>
+                        <Button
+                            variant="outlined"
+                            color="warning"
+                            onClick={handleMemberButton}
+                        >
+                            End room membership<CancelIcon />
+                        </Button>
+                        <InviteToRoomForm room_id={roomId} />
+                    </>
+                }
+
                 <Box id="messageBox">
                     <div id="boxAnchor" tabIndex={-1} ref={e => anchor = e}></div>
                     {messages.map(message => <MessageBox key={message.id} message={message} socket={socket} room_id={param.id} />)}

@@ -26,7 +26,7 @@ export default function ProfileWidget({ open, close }) {
         }).then(result => {
             if(result.isConfirmed) {
                 dispatch({type: 'REMOVE_BUDDY', payload: selectedUser.buddy_id});
-                Swal.fire('Get outta here!', '', 'success');
+                Swal.fire('Success!', '', 'success');
             } else {
                 Swal.fire('Got it!', 'Nothing happened', 'success');
             }
